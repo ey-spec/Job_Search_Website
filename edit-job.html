@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CareerLink - Edit Job</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="CareerLink Logo" width="150" height="40">
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">My Jobs</a> |
+                <a href="add-job.html">Add Job</a> |
+                <a href="index.html">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-box">
+            <h1>Edit Job Details</h1>
+
+            <form action="admin-dashboard.html" method="get">
+
+                <div class="form-group">
+                    <label>Job Title:</label>
+                    <input type="text" name="job_title" value="Software Engineer" required>
+                    <br><br>
+                </div>
+
+                <div class="form-group">
+                    <label>Salary:</label>
+                    <input type="number" name="salary" value="120000" required>
+                    <br><br>
+                </div>
+
+                <div class="form-group">
+                    <label>Years of Experience:</label>
+                    <input type="number" name="years_of_experience" value="3" required>
+                    <br><br>
+                </div>
+
+                <div class="form-group">
+                    <label>Job Status:</label>
+                    <select name="job_status" required>
+                        <option value="open" selected>Open</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                    <br><br>
+                </div>
+
+                <div class="form-group">
+                    <label>Description:</label>
+                    <br>
+                    <textarea name="description" rows="5" cols="40" required>We are looking for a skilled software engineer to join our team.</textarea>
+                    <br><br>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Save Changes">
+                    <a href="admin-dashboard.html">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <p>© 2026 CareerLink | <a href="mailto:eyadh3415@gmail.com">Contact Us</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

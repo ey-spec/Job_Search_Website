@@ -1,0 +1,280 @@
+/* ─── BASE ─── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0d1b4b 100%);
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+/*  NAVBAR  */
+nav {
+    background: rgba(10, 10, 26, 0.7);/*30% transparent so background shows through*/
+    backdrop-filter: blur(12px);/* blurs whatever is behind the navbar*/
+    padding: 15px 30px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+    position: sticky;/* navbar sticks to the top when scrolling*/
+    top: 0;
+    z-index: 100;/*makes navbar appear above everything else on the page*/
+}
+
+
+.nav-logo img {
+    filter: brightness(0) invert(1);
+    width: 200px;
+    height: 50px;
+}
+
+.nav-container {
+    display:flex; /*puts children side by side*/
+    justify-content: space-between;
+    align-items: center;/*pushes logo to left and links to right*/
+}
+
+.nav-links a {
+    color: #ffffff;
+    margin-left: 2px;
+    font-size: 15px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:visited {
+    color: #ffffff;
+}
+.nav-links a:hover {
+    color: #818cf8;
+}
+
+/*  FORM  */
+.container {
+    display: flex; /*centers form horizontally*/
+    justify-content: center; /*centers form vertically*/
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+}
+
+.form-box {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    padding: 45px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.15);
+}
+
+.form-box h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 26px;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255,0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 15px;
+    transition: border 0.3s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    outline: none;
+    border-color: #818cf8;
+    box-shadow: 0 0 10px rgba(129, 140, 248, 0.3);
+}
+
+.form-group input[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.3s;
+}
+
+.form-group input[type="submit"]:hover {
+    opacity: 0.85;
+}
+
+.form-group input[type="radio"] {
+    margin-right: 8px;
+    accent-color: #818cf8;
+}
+
+.form-box p {
+    text-align: center;
+    margin-top: 20px;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.form-box p a {
+    color: #818cf8;
+    text-decoration: none;
+}
+
+/* FOOTER */
+footer {
+    background: rgba(10, 10, 26, 0.7);
+    backdrop-filter: blur(12px);
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid rgba(99, 102, 241, 0.3);
+    color: #9ca3af;
+    margin-top: 60px;
+}
+
+footer a {
+    color: #818cf8;
+    text-decoration: none;
+}
+
+/*  HERO (index.html) */
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero h1 {
+    font-size: 52px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #9ca3af;
+    margin-bottom: 40px;
+}
+
+.hero-buttons a {
+    display: inline-block;
+    padding: 14px 35px;
+    margin: 0 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: opacity 0.3s;
+    text-decoration: none;
+}
+
+.hero-buttons a:first-child {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+}
+
+.hero-buttons a:last-child {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #ffffff;
+}
+
+.hero-buttons a:hover {
+    opacity: 0.85;
+}
+
+.hero-buttons a:visited {
+    color: #ffffff;
+}
+
+/* FEATURED JOBS  */
+.featured-jobs {
+    padding: 40px 60px;
+}
+
+.featured-jobs h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #ffffff;
+}
+
+.jobs-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.job-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 16px;
+    padding: 25px;
+    width: 280px;
+    transition: transform 0.3s, 
+    box-shadow 0.3s;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.job-card h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.job-card p {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 8px;
+}
+
+.job-card a {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: opacity 0.3s;
+    text-decoration: none;
+}
+
+.job-card a:hover {
+    opacity: 0.85;
+}
+
+.job-card a:visited {
+    color: #ffffff;
+}

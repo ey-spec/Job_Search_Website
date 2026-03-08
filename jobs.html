@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CareerLink - Browse Jobs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="CareerLink Logo" width="150" height="40">
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="jobs.html">Browse Jobs</a> |
+                <a href="search-results.html">Search</a> |
+                <a href="applied-jobs.html">Applied Jobs</a> |
+                <a href="index.html">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <h1>Browse All Jobs</h1>
+
+        <div class="search-bar">
+            <form action="search-results.html" method="get">
+                <input type="text" name="search" placeholder="Search by job title or years of experience">
+                <input type="radio" name="search_by" value="title" checked> Job Title
+                <input type="radio" name="search_by" value="experience"> Years of Experience
+                <input type="submit" value="Search">
+            </form>
+        </div>
+
+        <div class="jobs-grid">
+
+            <div class="job-card">
+                <h3>Software Engineer</h3>
+                <p>Company: Google</p>
+                <p>Salary: $120,000</p>
+                <p>Experience: 3 years</p>
+                <p>Status: Open</p>
+                <a href="job-details.html">View Details</a>
+            </div>
+
+            <div class="job-card">
+                <h3>Product Manager</h3>
+                <p>Company: Amazon</p>
+                <p>Salary: $130,000</p>
+                <p>Experience: 5 years</p>
+                <p>Status: Open</p>
+                <a href="job-details.html">View Details</a>
+            </div>
+
+            <div class="job-card">
+                <h3>UI Designer</h3>
+                <p>Company: Apple</p>
+                <p>Salary: $90,000</p>
+                <p>Experience: 2 years</p>
+                <p>Status: Closed</p>
+                <a href="job-details.html">View Details</a>
+            </div>
+
+            <div class="job-card">
+                <h3>Data Analyst</h3>
+                <p>Company: Meta</p>
+                <p>Salary: $110,000</p>
+                <p>Experience: 4 years</p>
+                <p>Status: Open</p>
+                <a href="job-details.html">View Details</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <p>© 2026 CareerLink | <a href="mailto:eyadh3415@gmail.com">Contact Us</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
