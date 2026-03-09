@@ -10,32 +10,34 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <a href="index.html">
-                    <img src="images/logo.png" alt="CareerLink Logo" width="150" height="40">
+                    <img src="images/logo.png" alt="CareerLink Logo" width="200" height="50">
                 </a>
             </div>
             <div class="nav-links">
-                <a href="jobs.html">Browse Jobs</a> |
-                <a href="search-results.html">Search</a> |
-                <a href="applied-jobs.html">Applied Jobs</a> |
+                <a href="jobs.html">Browse Jobs</a> 
+                <a href="search-results.html">Search</a> 
+                <a href="applied-jobs.html">Applied Jobs</a> 
                 <a href="index.html">Logout</a>
             </div>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="jobs-container">
 
         <h1>Search Results</h1>
 
         <div class="search-bar">
             <form action="search-results.html" method="get">
                 <input type="text" name="search" placeholder="Search by job title or years of experience" value="Engineer">
-                <input type="radio" name="search_by" value="title" checked> Job Title
-                <input type="radio" name="search_by" value="experience"> Years of Experience
+                <select name="search_by">
+                    <option value="title">Job Title</option>
+                    <option value="experience">Years of Experience</option>
+                </select>
                 <input type="submit" value="Search">
             </form>
         </div>
 
-        <p>Showing results for: <strong>"Engineer"</strong></p>
+        <p class="search-results-info">Showing results for: <strong>"Engineer"</strong></p>
 
         <div class="jobs-grid">
 
@@ -44,7 +46,7 @@
                 <p>Company: Google</p>
                 <p>Salary: $120,000</p>
                 <p>Experience: 3 years</p>
-                <p>Status: Open</p>
+                <span class="badge-open">Open</span>
                 <a href="job-details.html">View Details</a>
             </div>
 
@@ -53,7 +55,7 @@
                 <p>Company: Meta</p>
                 <p>Salary: $115,000</p>
                 <p>Experience: 4 years</p>
-                <p>Status: Open</p>
+                <span class="badge-open">Open</span>
                 <a href="job-details.html">View Details</a>
             </div>
 
@@ -62,7 +64,7 @@
                 <p>Company: Amazon</p>
                 <p>Salary: $125,000</p>
                 <p>Experience: 5 years</p>
-                <p>Status: Closed</p>
+                <span class="badge-closed">Closed</span>
                 <a href="job-details.html">View Details</a>
             </div>
 

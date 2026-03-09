@@ -10,12 +10,12 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <a href="index.html">
-                    <img src="images/logo.png" alt="CareerLink Logo" width="150" height="40">
+                    <img src="images/logo.png" alt="CareerLink Logo" width="200" height="50">
                 </a>
             </div>
             <div class="nav-links">
-                <a href="admin-dashboard.html">My Jobs</a> |
-                <a href="add-job.html">Add Job</a> |
+                <a href="admin-dashboard.html">My Jobs</a> 
+                <a href="add-job.html">Add Job</a> 
                 <a href="index.html">Logout</a>
             </div>
         </div>
@@ -30,19 +30,16 @@
                 <div class="form-group">
                     <label>Job Title:</label>
                     <input type="text" name="job_title" required>
-                    <br><br>
                 </div>
 
                 <div class="form-group">
                     <label>Salary:</label>
                     <input type="number" name="salary" required>
-                    <br><br>
                 </div>
 
                 <div class="form-group">
                     <label>Years of Experience:</label>
                     <input type="number" name="years_of_experience" required>
-                    <br><br>
                 </div>
 
                 <div class="form-group">
@@ -52,19 +49,17 @@
                         <option value="open">Open</option>
                         <option value="closed">Closed</option>
                     </select>
-                    <br><br>
                 </div>
 
                 <div class="form-group">
                     <label>Description:</label>
-                    <br>
                     <textarea name="description" rows="5" cols="40" required></textarea>
-                    <br><br>
+                    
                 </div>
 
                 <div class="form-group">
                     <input type="submit" value="Add Job">
-                    <a href="admin-dashboard.html">Cancel</a>
+                    <a href="admin-dashboard.html" class="cancel-btn">Cancel</a>
                 </div>
 
             </form>
