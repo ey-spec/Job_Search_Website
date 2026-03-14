@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CareerLink - Applied Jobs</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../images/icon_dark.png">
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <div class="nav-logo">
+            <a href="../SHARED/index.html">
+                <img src="../images/logo.png" alt="CareerLink Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="../USER/jobs.html">Browse Jobs</a>
+            <a href="../USER/applied-jobs.html">Applied Jobs</a>
+            <a href="../SHARED/index.html" id="logout-btn">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <div class="jobs-container">
+
+        <h1>My Applied Jobs</h1>
+
+        <!-- JS will hide this if there are applied jobs -->
+        <div id="no-applied-jobs" class="empty-state">
+            <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+            <p>You haven't applied to any jobs yet.</p>
+            <a href="../USER/jobs.html">Browse Jobs</a>
+        </div>
+
+        <!-- JS will fill this with the user's applied jobs -->
+        <div class="jobs-grid" id="applied-jobs-grid">
+
+            <article class="job-card" data-title="software engineer" data-experience="3">
+                <h3>Software Engineer</h3>
+                <p><strong>Company:</strong> Google</p>
+                <p><strong>Salary:</strong> $120,000</p>
+                <p><strong>Experience:</strong> 3 years</p>
+                <p><strong>Status:</strong> <span class="badge-open">Open</span></p>
+                <a href="job-details.html">View Details</a>
+            </article>
+
+            <article class="job-card" data-title="data analyst" data-experience="4">
+                <h3>Data Analyst</h3>
+                <p><strong>Company:</strong> Meta</p>
+                <p><strong>Salary:</strong> $110,000</p>
+                <p><strong>Experience:</strong> 4 years</p>
+                <p><strong>Status:</strong> <span class="badge-open">Open</span></p>
+                <a href="job-details.html">View Details</a>
+            </article>
+
+            <article class="job-card" data-title="ui designer" data-experience="2">
+                <h3>UI Designer</h3>
+                <p><strong>Company:</strong> Apple</p>
+                <p><strong>Salary:</strong> $90,000</p>
+                <p><strong>Experience:</strong> 2 years</p>
+                <p><strong>Status:</strong> <span class="badge-closed">Closed</span></p>
+                <a href="job-details.html">View Details</a>
+            </article>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-brand">
+            <p>Linking talent with opportunity.</p>
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-nav">
+            <a href="../USER/jobs.html">Browse Jobs</a>
+            <a href="../SHARED/login.html">Login</a>
+            <a href="../SHARED/signup.html">Sign Up</a>
+            <a href="mailto:eyadh3415@gmail.com">Contact Us</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 CareerLink. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,962 @@
+/* ════════════════════════════════════════
+   BASE
+════════════════════════════════════════ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0d1b4b 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ════════════════════════════════════════
+   NAVBAR
+════════════════════════════════════════ */
+nav {
+    background: rgba(10, 10, 26, 0.7);
+    backdrop-filter: blur(12px);
+    padding: 15px 30px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-logo img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.nav-logo img:hover {
+    transform: scale(1.05);
+    opacity: 0.85;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #ffffff;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 15px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:visited {
+    color: #ffffff;
+}
+
+.nav-links a:hover {
+    color: #818cf8;
+}
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+footer {
+    background: rgba(10, 10, 26, 0.7);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(99, 102, 241, 0.3);
+    padding: 40px 60px 20px;
+    margin-top: 60px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-brand p {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.footer-socials a {
+    color: #9ca3af;
+    font-size: 18px;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.footer-socials a:hover {
+    color: #818cf8;
+}
+
+.footer-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-nav a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.footer-nav a:hover {
+    color: #818cf8;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+    padding-top: 20px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+/* ════════════════════════════════════════
+   INDEX PAGE — HERO
+════════════════════════════════════════ */
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background-image: url('images/Index.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(10, 10, 26, 0.3) 0%,
+        rgba(10, 10, 26, 0.8) 100%
+    );
+}
+
+.hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-size: 52px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #9ca3af;
+    margin-bottom: 40px;
+}
+
+.hero-buttons a {
+    display: inline-block;
+    padding: 14px 35px;
+    margin: 0 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: opacity 0.3s;
+    text-decoration: none;
+}
+
+.hero-buttons a:first-child {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+}
+
+.hero-buttons a:last-child {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #ffffff;
+}
+
+.hero-buttons a:hover {
+    opacity: 0.85;
+}
+
+.hero-buttons a:visited {
+    color: #ffffff;
+}
+
+.hero-search {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.hero-search input {
+    padding: 14px 20px;
+    width: 400px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.hero-search input:focus {
+    outline: none;
+    border-color: #818cf8;
+}
+
+.hero-search button {
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.hero-search button:hover {
+    opacity: 0.85;
+}
+
+/* ════════════════════════════════════════
+   INDEX PAGE — STATS
+════════════════════════════════════════ */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    padding: 40px 60px;
+    border-top: 1px solid rgba(99, 102, 241, 0.3);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+    margin-bottom: 60px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item .stat-number {
+    font-size: 36px;
+    font-weight: 800;
+    display: block;
+    background: linear-gradient(135deg, #ffffff, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-item p {
+    color: #9ca3af;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* ════════════════════════════════════════
+   INDEX PAGE — WHY CAREERLINK
+════════════════════════════════════════ */
+.why-us {
+    padding: 0px 60px 60px;
+    text-align: center;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.why-us h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #ffffff, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.feature {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    padding: 35px 30px;
+    width: 220px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+}
+
+.feature i {
+    font-size: 36px;
+    color: #818cf8;
+    margin-bottom: 20px;
+}
+
+.feature h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.feature p {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* ════════════════════════════════════════
+   INDEX PAGE — FEATURED JOBS
+════════════════════════════════════════ */
+.featured-jobs {
+    padding: 40px 60px;
+}
+
+.featured-jobs h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #ffffff;
+    text-align: center;
+}
+
+/* ════════════════════════════════════════
+   SHARED — JOB CARDS & GRID
+   (used in index, jobs, dashboard,
+   applied-jobs pages)
+════════════════════════════════════════ */
+.jobs-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.job-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 16px;
+    padding: 25px;
+    width: 280px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.job-card h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.job-card p {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 8px;
+}
+
+.job-card a {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: opacity 0.3s;
+    text-decoration: none;
+}
+
+.job-card a:hover {
+    opacity: 0.85;
+}
+
+.job-card a:visited {
+    color: #ffffff;
+}
+
+/* ════════════════════════════════════════
+   SHARED — BADGES
+   (used in all job card pages)
+════════════════════════════════════════ */
+.badge-open {
+    background: rgba(0, 200, 100, 0.15);
+    border: 1px solid rgba(0, 200, 100, 0.4);
+    color: #00c864;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-closed {
+    background: rgba(255, 0, 0, 0.15);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    color: #ff6b6b;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ════════════════════════════════════════
+   SHARED — FORMS
+   (used in login, signup, add-job,
+   edit-job pages)
+════════════════════════════════════════ */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+}
+
+.form-box {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    padding: 45px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.15);
+}
+
+.form-box h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 26px;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.form-group label small {
+    color: #9ca3af;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 15px;
+    transition: border 0.3s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="number"]:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #818cf8;
+    box-shadow: 0 0 10px rgba(129, 140, 248, 0.3);
+}
+
+.form-group input[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.3s;
+}
+
+.form-group input[type="radio"] {
+    margin-right: 8px;
+    accent-color: #818cf8;
+}
+
+.form-group select option {
+    background: #1a0a2e;
+    color: #ffffff;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-group:last-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-box p {
+    text-align: center;
+    margin-top: 20px;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.form-box p a {
+    color: #818cf8;
+    text-decoration: none;
+}
+
+.form-box p a:hover {
+    text-decoration: underline;
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #818cf8;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.forgot-password:hover {
+    opacity: 0.75;
+}
+
+.cancel-btn {
+    display: inline-block;
+    padding: 13px 25px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 16px;
+    margin-left: 10px;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.cancel-btn:hover {
+    opacity: 0.85;
+}
+
+.cancel-btn:visited {
+    color: #ffffff;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #818cf8;
+    font-size: 15px;
+}
+
+.input-icon input {
+    padding-left: 42px !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.bg {
+    background-image: url('images/Index.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(10,10,26,0.85) 0%, rgba(26,10,46,0.85) 50%, rgba(13,27,75,0.85) 100%);
+}
+
+.bg > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ════════════════════════════════════════
+   SIGNUP PAGE — Company name hidden (Rkzo 3la De y rgalaaa)
+   by default until JS shows it
+════════════════════════════════════════ */
+#company-name-group {
+    display: none;
+}
+
+/* ════════════════════════════════════════
+   ADMIN DASHBOARD PAGE
+════════════════════════════════════════ */
+.dashboard-container {
+    padding: 40px 60px;
+    flex: 1;
+}
+
+.dashboard-container h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.dashboard-container > a {
+    display: inline-block;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    transition: opacity 0.3s;
+    text-decoration: none;
+}
+
+.dashboard-container > a:hover {
+    opacity: 0.85;
+}
+
+/* ─── Card Actions (Edit / Delete) ─── */
+.card-actions a {
+    display: inline-block;
+    margin-top: 15px;
+    margin-right: 10px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: opacity 0.3s;
+    text-decoration: none;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+}
+
+.card-actions a:visited {
+    color: #ffffff;
+}
+
+.delete-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 20px;
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    border-radius: 8px;
+    color: #ff6b6b;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.delete-btn:hover {
+    opacity: 0.85;
+}
+
+/* ════════════════════════════════════════
+   JOBS PAGE
+════════════════════════════════════════ */
+.jobs-container {
+    padding: 40px 60px;
+    flex: 1;
+}
+
+.jobs-container h1 {
+    font-size: 32px;
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+/* ─── Search Bar ─── */
+.search-bar {
+    margin-bottom: 35px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.search-bar input[type="text"],
+.search-bar select {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 15px;
+    margin-right: 10px;
+    transition: border 0.3s;
+}
+
+.search-bar input[type="text"] {
+    width: 350px;
+}
+
+.search-bar input[type="text"]:focus,
+.search-bar select:focus {
+    outline: none;
+    border-color: #818cf8;
+    box-shadow: 0 0 10px rgba(129, 140, 248, 0.3);
+}
+
+.search-bar button {
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.3s;
+}
+
+.search-bar button:hover {
+    opacity: 0.85;
+}
+
+.search-bar select option {
+    background: #1a0a2e;
+    color: #ffffff;
+}
+
+/* ─── Search Results Info ─── */
+.search-results-info {
+    color: #9ca3af;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+.search-results-info strong {
+    color: #818cf8;
+}
+
+/* ════════════════════════════════════════
+   JOB DETAILS PAGE
+════════════════════════════════════════ */
+.job-details-box {
+    max-width: 750px;
+    margin: 60px auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    padding: 45px;
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.15);
+}
+
+.job-details-box h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.job-info p {
+    font-size: 16px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+}
+
+.job-info p strong {
+    color: #ffffff;
+}
+
+.job-description {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.job-description h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #818cf8;
+}
+
+.job-description p {
+    color: #9ca3af;
+    line-height: 1.8;
+}
+
+.job-actions {
+    margin-top: 35px;
+    display: flex;
+    gap: 15px;
+}
+
+.job-actions a {
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: opacity 0.3s;
+    text-decoration: none;
+}
+
+.job-actions a:first-child {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+}
+
+.job-actions a:last-child {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #ffffff;
+}
+
+.job-actions a:hover {
+    opacity: 0.85;
+}
+
+.job-actions a:visited {
+    color: #ffffff;
+}
+
+/* ════════════════════════════════════════
+   APPLIED JOBS PAGE — Empty State
+════════════════════════════════════════ */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #9ca3af;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #818cf8;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.empty-state p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.empty-state a {
+    display: inline-block;
+    padding: 10px 25px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.empty-state a:hover {
+    opacity: 0.85;
+}
+
+/* ════════════════════════════════════════
+   ALL BUTTONS — Hover Animation
+════════════════════════════════════════ */
+.dashboard-container > a,
+.cancel-btn,
+.job-actions a,
+.card-actions a,
+.delete-btn,
+.hero-buttons a,
+.hero-search button,
+.job-card a,
+.search-bar button,
+.empty-state a,
+.form-group input[type="submit"] {
+    transition: transform 0.2s, box-shadow 0.3s, opacity 0.3s !important;
+}
+
+.dashboard-container > a:hover,
+.cancel-btn:hover,
+.job-actions a:hover,
+.card-actions a:hover,
+.delete-btn:hover,
+.hero-buttons a:hover,
+.hero-search button:hover,
+.job-card a:hover,
+.search-bar button:hover,
+.empty-state a:hover,
+.form-group input[type="submit"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4) !important;
+    opacity: 0.85 !important;
+}
+
+.dashboard-container > a:active,
+.cancel-btn:active,
+.job-actions a:active,
+.card-actions a:active,
+.delete-btn:active,
+.hero-buttons a:active,
+.hero-search button:active,
+.job-card a:active,
+.search-bar button:active,
+.empty-state a:active,
+.form-group input[type="submit"]:active {
+    transform: translateY(0px) !important;
+}

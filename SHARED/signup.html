@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CareerLink - Sign Up</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../images/icon_dark.png">
+    <link rel="preload" as="image" href="../images/Index.jpg">
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <div class="nav-logo">
+            <a href="../SHARED/index.html">
+                <img src="../images/logo.png" alt="CareerLink Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="../SHARED/index.html">Home</a>
+            <a href="../SHARED/login.html">Login</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <div class="bg">
+        <div class="container">
+            <div class="form-box">
+                <h1>Create Your Account</h1>
+
+                <form action="../SHARED/login.html" method="post">
+
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-user" aria-hidden="true"></i>
+                            <input type="text" id="username" name="username" placeholder="Enter your name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                            <input type="password" id="password" name="password" placeholder="Minimum 8 characters" minlength="8" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password:</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                            <input type="password" id="confirm-password" name="confirm_password" placeholder="Repeat your password" minlength="8" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Are you a Company Admin?</label>
+                        <input type="radio" name="is_company_admin" value="yes"> Yes
+                        <input type="radio" name="is_company_admin" value="no" checked> No
+                    </div>
+
+                    <div class="form-group" id="company-name-group">
+                        <label for="company-name">Company Name: <small>(Only if you are a Company Admin)</small></label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-building" aria-hidden="true"></i>
+                            <input type="text" id="company-name" name="company_name" placeholder="Enter your company name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Sign Up">
+                    </div>
+
+                </form>
+
+                <p>Already have an account? <a href="../SHARED/login.html">Login</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-brand">
+            <p>Linking talent with opportunity.</p>
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-nav">
+            <a href="../USER/jobs.html">Browse Jobs</a>
+            <a href="../SHARED/login.html">Login</a>
+            <a href="../SHARED/signup.html">Sign Up</a>
+            <a href="mailto:eyadh3415@gmail.com">Contact Us</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 CareerLink. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

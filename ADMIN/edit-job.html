@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CareerLink - Edit Job</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../images/icon_dark.png">
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <div class="nav-logo">
+            <a href="../SHARED/index.html">
+                <img src="../images/logo.png" alt="CareerLink Logo">
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="../ADMIN/admin-dashboard.html">My Jobs</a>
+            <a href="../ADMIN/add-job.html">Add Job</a>
+            <!-- TODO: clear session on logout -->
+            <a href="../index.html" id="logout-btn">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="form-box">
+            <h1>Edit Job Details</h1>
+
+            <form action="../ADMIN/admin-dashboard.html" method="post">
+
+                <div class="form-group">
+                    <label for="job-title">Job Title:</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+                        <input type="text" id="job-title" name="job_title" 
+                        value="Software Engineer" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="salary">Salary:</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i>
+                        <input type="number" id="salary" name="salary" 
+                        value="120000" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="years-of-experience">Years of Experience:</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+                        <input type="number" id="years-of-experience" name="years_of_experience" 
+                        value="3" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="job-status">Job Status:</label>
+                    <select id="job-status" name="job_status" required>
+                        <option value="open" selected>Open</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" rows="5" 
+                    required>We are looking for a skilled software engineer to join our team.</textarea>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Save Changes">
+                    <a href="../ADMIN/admin-dashboard.html" class="cancel-btn">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-brand">
+            <p>Linking talent with opportunity.</p>
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-nav">
+            <a href="../USER/jobs.html">Browse Jobs</a>
+            <a href="../SHARED/login.html">Login</a>
+            <a href="../SHARED/signup.html">Sign Up</a>
+            <a href="mailto:eyadh3415@gmail.com">Contact Us</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 CareerLink. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
