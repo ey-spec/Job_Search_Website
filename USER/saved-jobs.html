@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>CareerLink - Job Details</title>
+    <title>CareerLink - Saved Jobs</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../images/icon_dark.png">
@@ -17,46 +17,28 @@
         </div>
         <div class="nav-links">
             <a href="../USER/jobs.html">Browse Jobs</a>
+            <a href="../USER/saved-jobs.html">Saved Jobs</a>
             <a href="../USER/applied-jobs.html">Applied Jobs</a>
+            <a href="../USER/profile.html">Profile</a>
             <a href="../SHARED/index.html" id="logout-btn">Logout</a>
         </div>
     </div>
 </nav>
 
 <main>
-    <div class="container">
-        <div class="job-details-box" id="job-details-box">
-            <h1 id="job-title">Software Engineer</h1>
-            <div class="job-info">
-                <p><strong>Company:</strong> 
-                    <span id="job-company">Google</span>
-                </p>
-                <p><strong>Salary:</strong> 
-                    <span id="job-salary">$120,000</span>
-                </p>
-                <p><strong>Years of Experience:</strong> 
-                    <span id="job-experience">3 years</span>
-                </p>
-                <p><strong>Status:</strong> 
-                    <span id="job-status" class="badge-open">Open</span>
-                </p>
-            </div>
+    <div class="saved-jobs-container">
 
-            <div class="job-description">
-                <h2>Job Description</h2>
-                <p id="job-description">We are looking for a skilled software engineer 
-                to join our team. You will be responsible for developing and maintaining 
-                web applications, collaborating with cross-functional teams, and delivering 
-                high quality software solutions.</p>
-            </div>
+        <h1>My Saved Jobs</h1>
 
-            <div class="job-actions">
-                <a href="applied-jobs.html" id="apply-btn">Apply Now</a>
-                <a href="#" id="save-btn"><i class="fa-solid fa-bookmark"></i> Save Job</a>
-                <a href="jobs.html" id="back-btn">Back to Jobs</a>
-            </div>
-
+        <div id="no-saved-jobs" class="empty-state">
+            <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+            <p>No saved jobs yet.</p>
+            <a href="../USER/jobs.html" class="browse-link">Browse Jobs</a>
         </div>
+
+        <div class="saved-jobs-grid" id="saved-jobs-grid" style="display:none;">
+        </div>
+
     </div>
 </main>
 

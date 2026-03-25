@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>CareerLink - Job Details</title>
+    <title>CareerLink - Applicants</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../images/icon_dark.png">
@@ -16,47 +16,48 @@
             </a>
         </div>
         <div class="nav-links">
-            <a href="../USER/jobs.html">Browse Jobs</a>
-            <a href="../USER/applied-jobs.html">Applied Jobs</a>
+            <a href="../ADMIN/admin-dashboard.html">My Jobs</a>
+            <a href="../ADMIN/add-job.html">Add Job</a>
+            <a href="../USER/profile.html">Profile</a>
             <a href="../SHARED/index.html" id="logout-btn">Logout</a>
         </div>
     </div>
 </nav>
 
 <main>
-    <div class="container">
-        <div class="job-details-box" id="job-details-box">
-            <h1 id="job-title">Software Engineer</h1>
-            <div class="job-info">
-                <p><strong>Company:</strong> 
-                    <span id="job-company">Google</span>
-                </p>
-                <p><strong>Salary:</strong> 
-                    <span id="job-salary">$120,000</span>
-                </p>
-                <p><strong>Years of Experience:</strong> 
-                    <span id="job-experience">3 years</span>
-                </p>
-                <p><strong>Status:</strong> 
-                    <span id="job-status" class="badge-open">Open</span>
-                </p>
-            </div>
+    <div class="applicants-container">
 
-            <div class="job-description">
-                <h2>Job Description</h2>
-                <p id="job-description">We are looking for a skilled software engineer 
-                to join our team. You will be responsible for developing and maintaining 
-                web applications, collaborating with cross-functional teams, and delivering 
-                high quality software solutions.</p>
-            </div>
-
-            <div class="job-actions">
-                <a href="applied-jobs.html" id="apply-btn">Apply Now</a>
-                <a href="#" id="save-btn"><i class="fa-solid fa-bookmark"></i> Save Job</a>
-                <a href="jobs.html" id="back-btn">Back to Jobs</a>
-            </div>
-
+        <div class="applicants-header">
+            <a href="../ADMIN/admin-dashboard.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <h1 id="applicants-job-title">Applicants</h1>
+            <p id="applicants-job-meta" class="applicants-meta"></p>
         </div>
+
+        <!-- Empty state -->
+        <div id="no-applicants" class="empty-state" style="display:none;">
+            <i class="fa-solid fa-users"></i>
+            <p>No one has applied to this job yet.</p>
+            <a href="../ADMIN/admin-dashboard.html">Back to Dashboard</a>
+        </div>
+
+        <!-- Applicants table -->
+        <div id="applicants-table-wrap" style="display:none;">
+            <div class="applicants-count" id="applicants-count"></div>
+            <table class="applicants-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Applied For</th>
+                    </tr>
+                </thead>
+                <tbody id="applicants-tbody"></tbody>
+            </table>
+        </div>
+
     </div>
 </main>
 
@@ -83,6 +84,7 @@
         <p>© 2026 CareerLink. All rights reserved.</p>
     </div>
 </footer>
+
 <script src="../main.js"></script>
 </body>
 </html>
