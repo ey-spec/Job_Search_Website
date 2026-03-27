@@ -3,7 +3,7 @@
    Complete frontend JavaScript.
    No hardcoded values — everything is
    stored and read dynamically via
-   sessionStorage.
+   localStorage.
 ════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -25,75 +25,28 @@ document.addEventListener('DOMContentLoaded', function () {
        STORAGE HELPERS
     ───────────────────────────────────── */
     function getJobs() {
-        return JSON.parse(sessionStorage.getItem('jobs') || '[]');
+        return JSON.parse(localStorage.getItem('jobs') || '[]');
     }
 
     function saveJobs(jobs) {
-        sessionStorage.setItem('jobs', JSON.stringify(jobs));
+        localStorage.setItem('jobs', JSON.stringify(jobs));
     }
 
     function getAppliedJobs() {
-        return JSON.parse(sessionStorage.getItem('appliedJobs') || '[]');
+        return JSON.parse(localStorage.getItem('appliedJobs') || '[]');
     }
 
     function saveAppliedJobs(jobs) {
-        sessionStorage.setItem('appliedJobs', JSON.stringify(jobs));
+        localStorage.setItem('appliedJobs', JSON.stringify(jobs));
     }
 
     function getUsers() {
-        return JSON.parse(sessionStorage.getItem('users') || '[]');
+        return JSON.parse(localStorage.getItem('users') || '[]');
     }
 
     function saveUsers(users) {
-        sessionStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('users', JSON.stringify(users));
     }
-
-    // ── Seed default jobs if none exist yet ──
-    function seedJobs() {
-        if (sessionStorage.getItem('jobsSeeded')) return;
-        sessionStorage.setItem('jobsSeeded', 'true');
-        const defaults = [
-            {
-                id:          1,
-                title:       'Software Engineer',
-                company:     'Google',
-                salary:      '$120,000',
-                experience:  '3',
-                status:      'open',
-                description: 'We are looking for a skilled Software Engineer to join our team at Google. You will design and develop scalable web applications, collaborate with cross-functional teams, and deliver high quality software solutions.',
-            },
-            {
-                id:          2,
-                title:       'Product Manager',
-                company:     'Amazon',
-                salary:      '$130,000',
-                experience:  '5',
-                status:      'closed',
-                description: 'Amazon is seeking an experienced Product Manager to lead product strategy and roadmap. You will work closely with engineering, design, and business teams to define and ship great products.',
-            },
-            {
-                id:          3,
-                title:       'UI Designer',
-                company:     'Apple',
-                salary:      '$90,000',
-                experience:  '2',
-                status:      'open',
-                description: 'Join Apple as a UI Designer and craft beautiful, intuitive interfaces used by millions. You will create high-fidelity mockups, design systems, and collaborate with product and engineering teams.',
-            },
-            {
-                id:          4,
-                title:       'AI Engineer',
-                company:     'Microsoft',
-                salary:      '$190,000',
-                experience:  '7',
-                status:      'open',
-                description: 'Microsoft is hiring an AI Engineer to build and deploy machine learning models at scale. You will work on cutting-edge AI products and contribute to the next generation of intelligent software.',
-            },
-        ];
-        saveJobs(defaults);
-    }
-
-    seedJobs();
 
 
     /* ════════════════════════════════════
@@ -104,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
        - Logout
     ════════════════════════════════════ */
     (function initNavbar() {
-        const role     = sessionStorage.getItem('role');
+        const role     = localStorage.getItem('role');
         const navLinks = document.querySelector('.nav-links');
         if (!navLinks) return;
 
@@ -158,12 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (logoutBtn) {
             logoutBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                sessionStorage.removeItem('role');
-                sessionStorage.removeItem('username');
-                sessionStorage.removeItem('selectedJob');
-                sessionStorage.removeItem('editJobId');
-                sessionStorage.removeItem('viewJobId');
-                sessionStorage.removeItem('appliedJobs');
+                localStorage.removeItem('role');
+                localStorage.removeItem('username');
+                localStorage.removeItem('selectedJob');
+                localStorage.removeItem('editJobId');
+                localStorage.removeItem('viewJobId');
                 window.location.href = path('SHARED/index.html');
             });
         }
@@ -178,18 +130,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
         if (!form) return;
 
-        const role = sessionStorage.getItem('role');
+        const role = localStorage.getItem('role');
         if (role === 'admin') { window.location.href = path('ADMIN/admin-dashboard.html'); return; }
         if (role === 'user')  { window.location.href = path('USER/jobs.html'); return; }
-
-        function seedUsers() {
-            if (getUsers().length > 0) return;
-            saveUsers([
-                { username: 'admin', password: 'admin123', role: 'admin', company: 'CareerLink', email: 'admin@careerlink.com' },
-                { username: 'user',  password: 'user1234', role: 'user',  company: '',            email: 'user@careerlink.com'  },
-            ]);
-        }
-        seedUsers();
 
         document.querySelectorAll('.social-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -220,8 +163,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!match) { showError('password', 'Invalid username or password.'); return; }
 
-            sessionStorage.setItem('role',     match.role);
-            sessionStorage.setItem('username', match.username);
+            localStorage.setItem('role',     match.role);
+            localStorage.setItem('username', match.username);
 
             if (match.role === 'admin') {
                 window.location.href = path('ADMIN/admin-dashboard.html');
@@ -240,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
         if (!form) return;
 
-        const role = sessionStorage.getItem('role');
+        const role = localStorage.getItem('role');
         if (role === 'admin') { window.location.href = path('ADMIN/admin-dashboard.html'); return; }
         if (role === 'user')  { window.location.href = path('USER/jobs.html'); return; }
 
@@ -346,8 +289,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             saveUsers(users);
 
-            sessionStorage.setItem('role',     isAdmin === 'yes' ? 'admin' : 'user');
-            sessionStorage.setItem('username', username);
+            localStorage.setItem('role',     isAdmin === 'yes' ? 'admin' : 'user');
+            localStorage.setItem('username', username);
             window.location.href = path('SHARED/login.html');
         });
     }
@@ -415,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         e.preventDefault();
                         const jobId = parseInt(card.dataset.id);
                         const job   = getJobs().find(function (j) { return j.id === jobId; });
-                        if (job) sessionStorage.setItem('selectedJob', JSON.stringify(job));
+                        if (job) localStorage.setItem('selectedJob', JSON.stringify(job));
                         window.location.href = '../USER/job-details.html';
                     });
                 });
@@ -452,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     e.preventDefault();
                     const jobId = parseInt(card.dataset.id);
                     const job   = getJobs().find(function (j) { return j.id === jobId; });
-                    if (job) sessionStorage.setItem('selectedJob', JSON.stringify(job));
+                    if (job) localStorage.setItem('selectedJob', JSON.stringify(job));
                     window.location.href = 'job-details.html';
                 });
             });
@@ -499,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function () {
     File: USER/job-details.html
     ════════════════════════════════════ */
     if (page === 'job-details.html') {
-        const jobData = JSON.parse(sessionStorage.getItem('selectedJob') || 'null');
+        const jobData = JSON.parse(localStorage.getItem('selectedJob') || 'null');
 
         if (!jobData) { window.location.href = 'jobs.html'; return; }
 
@@ -518,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Save job functionality
         const saveBtn = document.getElementById('save-btn');
         if (saveBtn) {
-            const saved = JSON.parse(sessionStorage.getItem('savedJobs') || '[]');
+            const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
             const alreadySaved = saved.some(function (j) { return j.id === jobData.id; });
             
             if (alreadySaved) {
@@ -528,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 saveBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     saved.push(jobData);
-                    sessionStorage.setItem('savedJobs', JSON.stringify(saved));
+                    localStorage.setItem('savedJobs', JSON.stringify(saved));
                     this.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
                     this.style.pointerEvents = 'none';
                     this.style.opacity = '0.6';
@@ -538,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         const applied        = getAppliedJobs();
         const alreadyApplied = applied.some(function (j) { return j.id === jobData.id; });
-        const currentRole    = sessionStorage.getItem('role');
+        const currentRole    = localStorage.getItem('role');
         const backBtn = document.getElementById('back-btn');
         if (backBtn && currentRole === 'admin') {
             backBtn.textContent = 'Back to Home';
@@ -566,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function () {
         applyBtn.addEventListener('click', function (e) {
             e.preventDefault();
 
-            const username = sessionStorage.getItem('username');
+            const username = localStorage.getItem('username');
             const users    = getUsers();
             const me       = users.find(function (u) { return u.username === username; });
 
@@ -575,14 +518,14 @@ document.addEventListener('DOMContentLoaded', function () {
             saveAppliedJobs(applied);
 
             // ── Save to jobApplications (admin side) ──
-            const allApplications = JSON.parse(sessionStorage.getItem('jobApplications') || '[]');
+            const allApplications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
             allApplications.push({
                 jobId:    jobData.id,
                 username: username,
                 email:    me ? (me.email || '') : '',
                 jobTitle: jobData.title,
             });
-            sessionStorage.setItem('jobApplications', JSON.stringify(allApplications));
+            localStorage.setItem('jobApplications', JSON.stringify(allApplications));
 
             applyBtn.textContent         = '✓ Applied Successfully!';
             applyBtn.style.background    = 'linear-gradient(135deg, #1D9E75, #0F6E56)';
@@ -672,7 +615,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     card.style.opacity    = '0';
                     card.classList.add('fade-out');
                     setTimeout(function () {
+                        // ── Remove job ──
                         saveJobs(jobs.filter(function (j) { return j.id !== jobId; }));
+
+                        // ── Remove from appliedJobs ──
+                        const applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+                        localStorage.setItem('appliedJobs', JSON.stringify(
+                            applied.filter(function (j) { return j.id !== jobId; })
+                        ));
+
+                        // ── Remove from savedJobs ──
+                        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+                        localStorage.setItem('savedJobs', JSON.stringify(
+                            saved.filter(function (j) { return j.id !== jobId; })
+                        ));
+
+                        // ── Remove from jobApplications ──
+                        const applications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
+                        localStorage.setItem('jobApplications', JSON.stringify(
+                            applications.filter(function (a) { return a.jobId !== jobId; })
+                        ));
+
                         renderAdminJobs();
                     }, 300);
                 });
@@ -683,7 +646,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault();
                 const card  = e.target.closest('.job-card');
                 const jobId = parseInt(card.dataset.id);
-                sessionStorage.setItem('editJobId', jobId);
+                localStorage.setItem('editJobId', jobId);
                 window.location.href = 'edit-job.html';
             }
 
@@ -692,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault();
                 const card  = e.target.closest('.job-card');
                 const jobId = parseInt(card.dataset.id);
-                sessionStorage.setItem('viewJobId', jobId);
+                localStorage.setItem('viewJobId', jobId);
                 window.location.href = 'applicants.html';
             }
         });
@@ -736,7 +699,7 @@ document.addEventListener('DOMContentLoaded', function () {
             jobs.push({
                 id:          newId,
                 title:       values.title,
-                company:     sessionStorage.getItem('username') || 'My Company',
+                company:     localStorage.getItem('username') || 'My Company',
                 salary:      '$' + Number(values.salary).toLocaleString(),
                 experience:  values.experience,
                 status:      values.status,
@@ -761,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
         if (!form) return;
 
-        const editJobId = parseInt(sessionStorage.getItem('editJobId'));
+        const editJobId = parseInt(localStorage.getItem('editJobId'));
         const jobs      = getJobs();
         const jobToEdit = jobs.find(function (j) { return j.id === editJobId; });
 
@@ -810,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function () {
     File: ADMIN/applicants.html
     ════════════════════════════════════ */
     if (page === 'applicants.html') {
-        const viewJobId = parseInt(sessionStorage.getItem('viewJobId'));
+        const viewJobId = parseInt(localStorage.getItem('viewJobId'));
         const jobs      = getJobs();
         const job       = jobs.find(function (j) { return j.id === viewJobId; });
 
@@ -821,7 +784,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (titleEl) titleEl.textContent = job.title;
         if (metaEl)  metaEl.textContent  = job.company + ' · ' + (job.status === 'open' ? 'Open' : 'Closed');
 
-        const allApplications = JSON.parse(sessionStorage.getItem('jobApplications') || '[]');
+        const allApplications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
         const jobApplicants   = allApplications.filter(function (a) { return a.jobId === viewJobId; });
 
         const noApplicants = document.getElementById('no-applicants');
@@ -883,8 +846,8 @@ document.addEventListener('DOMContentLoaded', function () {
     File: USER/profile.html
     ════════════════════════════════════ */
     if (page === 'profile.html') {
-        const username = sessionStorage.getItem('username');
-        const role     = sessionStorage.getItem('role');
+        const username = localStorage.getItem('username');
+        const role     = localStorage.getItem('role');
 
         const displayName = document.getElementById('profile-display-name');
         const displayRole = document.getElementById('profile-display-role');
@@ -954,7 +917,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
             });
             saveUsers(updatedUsers);
-            sessionStorage.setItem('username', newUsername);
+            localStorage.setItem('username', newUsername);
 
             if (displayName) displayName.textContent = newUsername;
 
@@ -1051,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const badgeClass = job.status === 'open' ? 'badge-open' : 'badge-closed';
         const badgeText  = job.status === 'open' ? 'Open' : 'Closed';
 
-        const allApplications = JSON.parse(sessionStorage.getItem('jobApplications') || '[]');
+        const allApplications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
         const applicantCount  = allApplications.filter(function (a) { return a.jobId === job.id; }).length;
 
         let actionsHTML = '';
@@ -1221,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!grid || !emptyMsg) return;
 
         function renderSavedJobs() {
-            const saved = JSON.parse(sessionStorage.getItem('savedJobs') || '[]');
+            const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
             
             if (saved.length === 0) {
                 grid.style.display     = 'none';
@@ -1240,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const card  = this.closest('.job-card');
                         const jobId = parseInt(card.dataset.id);
                         const updated = saved.filter(function (j) { return j.id !== jobId; });
-                        sessionStorage.setItem('savedJobs', JSON.stringify(updated));
+                        localStorage.setItem('savedJobs', JSON.stringify(updated));
                         
                         card.style.transition = 'opacity 0.3s, transform 0.3s';
                         card.style.opacity    = '0';
@@ -1260,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const card  = this.closest('.job-card');
                         const jobId = parseInt(card.dataset.id);
                         const job   = saved.find(function (j) { return j.id === jobId; });
-                        if (job) sessionStorage.setItem('selectedJob', JSON.stringify(job));
+                        if (job) localStorage.setItem('selectedJob', JSON.stringify(job));
                         window.location.href = 'job-details.html';
                     });
                 });
@@ -1289,5 +1252,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 });
-
-    

@@ -15,12 +15,7 @@
                 <img src="../images/logo.png" alt="CareerLink Logo">
             </a>
         </div>
-        <div class="nav-links">
-            <a href="../ADMIN/admin-dashboard.html">My Jobs</a>
-            <a href="../ADMIN/add-job.html">Add Job</a>
-            <!-- TODO: clear session on logout -->
-            <a href="../SHARED/index.html" id="logout-btn">Logout</a>
-        </div>
+        <div class="nav-links"></div>
     </div>
 </nav>
 
@@ -36,7 +31,7 @@
                     <div class="input-icon">
                         <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
                         <input type="text" id="job-title" name="job_title" 
-                        value="Software Engineer" required>
+                        placeholder="e.g. Software Engineer" required>
                     </div>
                 </div>
 
@@ -45,7 +40,7 @@
                     <div class="input-icon">
                         <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i>
                         <input type="number" id="salary" name="salary" 
-                        value="120000" min="0" required>
+                        min="0" placeholder="e.g. 50000" required>
                     </div>
                 </div>
 
@@ -54,14 +49,15 @@
                     <div class="input-icon">
                         <i class="fa-solid fa-calendar" aria-hidden="true"></i>
                         <input type="number" id="years-of-experience" name="years_of_experience" 
-                        value="3" min="0" required>
+                        min="0" placeholder="e.g. 3" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="job-status">Job Status:</label>
                     <select id="job-status" name="job_status" required>
-                        <option value="open" selected>Open</option>
+                        <option value="">-- Select Status --</option>
+                        <option value="open">Open</option>
                         <option value="closed">Closed</option>
                     </select>
                 </div>
@@ -69,7 +65,8 @@
                 <div class="form-group">
                     <label for="description">Description:</label>
                     <textarea id="description" name="description" rows="5" 
-                    required>We are looking for a skilled software engineer to join our team.</textarea>
+                        placeholder="Describe the job role, responsibilities and requirements..." 
+                        required></textarea>
                 </div>
 
                 <div class="form-group">
