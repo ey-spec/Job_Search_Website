@@ -1361,7 +1361,7 @@ main {
     width: 100%;
 }
 
-.profile-banner {
+.profile-header {
     display: flex;
     align-items: center;
     gap: 24px;
@@ -1369,16 +1369,16 @@ main {
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 32px 36px;
     margin-bottom: 32px;
-    box-shadow: 0 4px 24px rgba(10,10,26,0.4);
+    box-shadow: 0 4px 20px var(--shadow);
 }
 
 .profile-avatar {
     width: 80px;
     height: 80px;
-    background: var(--grad-primary);
+    background: var(--bg-deep);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1388,23 +1388,24 @@ main {
     flex-shrink: 0;
 }
 
-.profile-banner-info h1 {
+.profile-header-info h1 {
     font-family: 'Playfair Display', serif;
     font-size: 26px;
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
-.profile-banner-info p {
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-.profile-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+.profile-role-badge {
+    background: rgba(178,144,121,0.15);
+    border: 1px solid var(--glass-border);
+    color: var(--accent);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .profile-card {
@@ -1412,9 +1413,10 @@ main {
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 32px;
-    box-shadow: 0 4px 20px rgba(10,10,26,0.4);
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px var(--shadow);
 }
 
 .profile-card h2 {
@@ -1423,18 +1425,25 @@ main {
     font-weight: 700;
     color: var(--text);
     margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-.profile-card h2 i {
-    color: var(--accent);
-    font-size: 16px;
+.profile-section-divider {
+    border-top: 1px solid var(--glass-border);
+    padding-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.profile-stats-card {
-    grid-column: 1 / -1;
+.profile-section-divider small {
+    color: var(--text-light);
+    font-size: 12px;
+    text-transform: none;
+    font-weight: 400;
 }
 
 .profile-stats {
@@ -1447,45 +1456,26 @@ main {
     text-align: center;
 }
 
-.profile-stat span {
+.profile-stat-number {
     font-family: 'Playfair Display', serif;
     font-size: 42px;
     font-weight: 800;
     display: block;
-    background: var(--grad-text);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--accent);
 }
 
 .profile-stat p {
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 14px;
     margin-top: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     font-weight: 500;
 }
 
-.profile-view-applied {
-    display: inline-block;
-    padding: 10px 22px;
-    background: var(--grad-primary);
-    color: var(--white);
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-.profile-view-applied:visited {
-    color: var(--white);
-}
-
-.profile-view-applied:hover {
-    opacity: 0.85;
+.profile-actions {
+    display: flex;
+    align-items: center;
 }
 
 
@@ -2199,4 +2189,32 @@ main {
 
 .about-block-reverse {
     flex-direction: row-reverse;
+}
+
+/* ── Danger Zone ── */
+.danger-zone h2 {
+    color: #ff5050;
+}
+
+.danger-zone p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.btn-danger {
+    background: transparent;
+    border: 1px solid #ff5050;
+    color: #ff5050;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-danger:hover {
+    background: #ff5050;
+    color: #fff;
 }

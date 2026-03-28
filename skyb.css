@@ -2171,4 +2171,30 @@ main {
     background: var(--accent) !important;
     color: var(--white) !important;
 }
+/* ── Danger Zone ── */
+.danger-zone h2 {
+    color: #ff5050;
+}
 
+.danger-zone p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.btn-danger {
+    background: transparent;
+    border: 1px solid #ff5050;
+    color: #ff5050;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-danger:hover {
+    background: #ff5050;
+    color: #fff;
+}

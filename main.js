@@ -942,6 +942,28 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('new-password').value         = '';
             document.getElementById('confirm-new-password').value = '';
         });
+        // ── Delete Account ──
+    const deleteBtn = document.getElementById('delete-account-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function () {
+            showConfirmModal('Delete your account? This cannot be undone.', function () {
+                const currentUsername = localStorage.getItem('username');
+
+                const allUsers = getUsers();
+                const updatedUsers = allUsers.filter(function (u) {
+                    return u.username !== currentUsername;
+                });
+                saveUsers(updatedUsers);
+
+                localStorage.removeItem('role');
+                localStorage.removeItem('username');
+                localStorage.removeItem('appliedJobs');
+                localStorage.removeItem('savedJobs');
+
+                window.location.href = path('SHARED/index.html');
+            });
+        });
+    }
     }
 
 
