@@ -377,6 +377,7 @@ footer {
     font-family: 'Playfair Display', serif;
     font-size: 36px;
     font-weight: 700;
+    margin-top: 20px;
     margin-bottom: 40px;
     background: var(--grad-text);
     -webkit-background-clip: text;
@@ -440,7 +441,9 @@ footer {
     font-size: 30px;
     font-weight: 700;
     margin-bottom: 30px;
-    color: var(--text);
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     text-align: center;
 }
 
