@@ -8,6 +8,12 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    const pendingToast = localStorage.getItem('showToast');
+    if (pendingToast) {
+        localStorage.removeItem('showToast');
+        showToast(pendingToast);
+    }
+
     /* ─────────────────────────────────────
        UTILITY — page detection & paths
     ───────────────────────────────────── */
@@ -166,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem('role',     match.role);
             localStorage.setItem('username', match.username);
 
+            localStorage.setItem('showToast', '✓ Logged in successfully!');
             if (match.role === 'admin') {
                 window.location.href = path('ADMIN/admin-dashboard.html');
             } else {
@@ -289,8 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             saveUsers(users);
 
-            localStorage.setItem('role',     isAdmin === 'yes' ? 'admin' : 'user');
-            localStorage.setItem('username', username);
+            localStorage.setItem('showToast', '✓ Account created successfully!');
             window.location.href = path('SHARED/login.html');
         });
     }

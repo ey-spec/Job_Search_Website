@@ -2161,20 +2161,20 @@ main {
 /* Toast notification */
 #cl-toast {
     position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--accent);
-    color: var(--white);
-    padding: 14px 28px;
-    border-radius: 50px;
+    top: 90px;
+    right: 24px;
+    bottom: auto;
+    background: rgba(29, 158, 117, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(29, 158, 117, 0.25);
+    color: #1D9E75;
+    padding: 14px 22px;
+    border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 8px 28px var(--shadow-md);
+    box-shadow: 0 8px 32px rgba(29, 158, 117, 0.15);
     z-index: 9999;
-    pointer-events: none;
-    white-space: nowrap;
-    letter-spacing: 0.3px;
 }
 
 /* Success states */
