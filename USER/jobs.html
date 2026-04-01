@@ -24,7 +24,6 @@
 
         <h1>Browse All Jobs</h1>
 
-        <!-- Search bar — JS will handle filtering -->
         <div class="search-bar">
             <input type="text" id="search-input" 
             placeholder="Search by job title or years of experience...">
@@ -32,10 +31,21 @@
                 <option value="title">Job Title</option>
                 <option value="experience">Years of Experience</option>
             </select>
+            <select id="sort-filter">
+                <option value="">Sort By</option>
+                <option value="salary-high">Salary: High to Low</option>
+                <option value="salary-low">Salary: Low to High</option>
+                <option value="experience-high">Experience: High to Low</option>
+                <option value="experience-low">Experience: Low to High</option>
+            </select>
+            <select id="status-filter">
+                <option value="all">Filter By (Status)</option>
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+            </select>
             <button type="button" id="search-btn">Search</button>
         </div>
 
-        <!-- JS will fill this with results info -->
         <p id="search-results-info" class="search-results-info"></p>
 
         <div class="jobs-grid" id="jobs-grid">

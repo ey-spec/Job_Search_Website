@@ -7,7 +7,7 @@
 ════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', function () {
-
+    
     const pendingToast = localStorage.getItem('showToast');
     if (pendingToast) {
         localStorage.removeItem('showToast');
@@ -412,14 +412,50 @@ document.addEventListener('DOMContentLoaded', function () {
         function runSearch() {
             const query      = searchInput.value.trim().toLowerCase();
             const filterType = searchFilter.value;
+            const sortType   = document.getElementById('sort-filter').value;
+            const statusType = document.getElementById('status-filter').value; 
             const allJobs    = getJobs();
 
-            const filtered = allJobs.filter(function (job) {
-                if (!query) return true;
-                if (filterType === 'title')      return job.title.toLowerCase().includes(query);
-                if (filterType === 'experience') return job.experience.trim() === query.trim();
-                return true;
+            let filtered = allJobs.filter(function (job) {
+                // ── Check Search Query ──
+                let matchesQuery = true;
+                if (query) {
+                    if (filterType === 'title') {
+                        matchesQuery = job.title.toLowerCase().includes(query);
+                    } else if (filterType === 'experience') {
+                        matchesQuery = job.experience.trim() === query.trim();
+                    }
+                }
+
+                // ── Check Status Filter ──
+                let matchesStatus = true;
+                if (statusType !== 'all') {
+                    matchesStatus = job.status === statusType;
+                }
+
+                return matchesQuery && matchesStatus;
             });
+
+            
+
+            // ── Sort ──
+            if (sortType === 'salary-high') {
+                filtered.sort(function (a, b) {
+                    return parseInt(b.salary.replace(/\D/g, '')) - parseInt(a.salary.replace(/\D/g, ''));
+                });
+            } else if (sortType === 'salary-low') {
+                filtered.sort(function (a, b) {
+                    return parseInt(a.salary.replace(/\D/g, '')) - parseInt(b.salary.replace(/\D/g, ''));
+                });
+            } else if (sortType === 'experience-high') {
+                filtered.sort(function (a, b) {
+                    return parseInt(b.experience) - parseInt(a.experience);
+                });
+            } else if (sortType === 'experience-low') {
+                filtered.sort(function (a, b) {
+                    return parseInt(a.experience) - parseInt(b.experience);
+                });
+            }
 
             renderJobs(filtered);
 
@@ -436,6 +472,8 @@ document.addEventListener('DOMContentLoaded', function () {
             searchBtn.addEventListener('click', runSearch);
             searchInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') runSearch(); });
             searchInput.addEventListener('input',   function ()  { if (this.value === '') runSearch(); });
+            document.getElementById('sort-filter').addEventListener('change', runSearch);
+            document.getElementById('status-filter').addEventListener('change', runSearch);
         }
 
         const heroQuery = new URLSearchParams(window.location.search).get('q');
@@ -454,6 +492,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('job-title').textContent       = jobData.title;
         document.getElementById('job-company').textContent     = jobData.company;
+        document.getElementById('job-work-type').textContent   = jobData.workType || 'On-site';
         document.getElementById('job-salary').textContent      = jobData.salary;
         document.getElementById('job-experience').textContent  = jobData.experience + ' years';
         document.getElementById('job-description').textContent = jobData.description;
@@ -705,7 +744,8 @@ document.addEventListener('DOMContentLoaded', function () {
             jobs.push({
                 id:          newId,
                 title:       values.title,
-                company:     localStorage.getItem('username') || 'My Company',
+                company:     values.company,
+                workType:   document.getElementById('work-type').value,
                 salary:      '$' + Number(values.salary).toLocaleString(),
                 experience:  values.experience,
                 status:      values.status,
@@ -737,6 +777,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!jobToEdit) { window.location.href = path('ADMIN/admin-dashboard.html'); return; }
 
         document.getElementById('job-title').value           = jobToEdit.title;
+        document.getElementById('company-name').value        = jobToEdit.company;
+        document.getElementById('work-type').value = jobToEdit.workType || '';
         document.getElementById('salary').value              = jobToEdit.salary.replace(/[^0-9]/g, '');
         document.getElementById('years-of-experience').value = jobToEdit.experience;
         document.getElementById('job-status').value          = jobToEdit.status;
@@ -756,7 +798,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return {
                     id:          j.id,
                     title:       values.title,
-                    company:     j.company,
+                    company:     values.company,
+                    workType:    values.workType,
                     salary:      '$' + Number(values.salary).toLocaleString(),
                     experience:  values.experience,
                     status:      values.status,
@@ -764,14 +807,53 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
             });
             saveJobs(updatedJobs);
+            
+            // ── Update savedJobs if this job was saved ──
+            const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+            const updatedSaved = savedJobs.map(function (j) {
+                if (j.id !== editJobId) return j;
+                return {
+                    id:          j.id,
+                    title:       values.title,
+                    company:     values.company,
+                    workType:    values.workType,
+                    salary:      '$' + Number(values.salary).toLocaleString(),
+                    experience:  values.experience,
+                    status:      values.status,
+                    category:    values.category,
+                    description: values.desc,
+                };
+            });
+            localStorage.setItem('savedJobs', JSON.stringify(updatedSaved));
+
+            // ── Update appliedJobs if this job was applied to ──
+            const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+            const updatedApplied = appliedJobs.map(function (j) {
+                if (j.id !== editJobId) return j;
+                return {
+                    id:          j.id,
+                    title:       values.title,
+                    company:     values.company,
+                    workType:    values.workType,
+                    salary:      '$' + Number(values.salary).toLocaleString(),
+                    experience:  values.experience,
+                    status:      values.status,
+                    category:    values.category,
+                    description: values.desc,
+                };
+            });
+            localStorage.setItem('appliedJobs', JSON.stringify(updatedApplied));
 
             showSubmitSuccess('Changes Saved!');
             showToast('Job updated successfully!');
-            setTimeout(function () {
-                window.location.href = path('ADMIN/admin-dashboard.html');
-            }, 800);
-        });
-    }
+                        
+                        showSubmitSuccess('Changes Saved!');
+                        showToast('Job updated successfully!');
+                        setTimeout(function () {
+                            window.location.href = path('ADMIN/admin-dashboard.html');
+                        }, 800);
+                    });
+                }
 
 
     /* ════════════════════════════════════
@@ -979,6 +1061,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function getJobFormValues() {
         return {
             title:      document.getElementById('job-title').value.trim(),
+            company:    document.getElementById('company-name').value.trim(),
+            workType:   document.getElementById('work-type').value,
             salary:     document.getElementById('salary').value,
             experience: document.getElementById('years-of-experience').value,
             status:     document.getElementById('job-status').value,
@@ -992,6 +1076,9 @@ document.addEventListener('DOMContentLoaded', function () {
             showError('job-title', 'Job title is required.'); valid = false;
         } else if (v.title.length < 3) {
             showError('job-title', 'Job title must be at least 3 characters.'); valid = false;
+        }
+        if (!v.company) { 
+        showError('company-name', 'Company name is required.'); valid = false;
         }
         if (v.salary === '' || Number(v.salary) < 0) {
             showError('salary', 'Please enter a valid salary.'); valid = false;
@@ -1065,6 +1152,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <article class="job-card" data-id="${job.id}">
                 <h3>${escapeHTML(job.title)}</h3>
                 <p><strong>Company:</strong> ${escapeHTML(job.company)}</p>
+                <p><strong>Work Type:</strong> ${escapeHTML(job.workType || 'On-site')}</p>
                 <p><strong>Salary:</strong> ${escapeHTML(job.salary)}</p>
                 <p><strong>Experience:</strong> ${escapeHTML(job.experience)} years</p>
                 <p><strong>Status:</strong> <span class="${badgeClass}">${badgeText}</span></p>
@@ -1266,6 +1354,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span class="saved-badge"><i class="fa-solid fa-bookmark"></i> Saved</span>
                     <h3>${escapeHTML(job.title)}</h3>
                     <p><strong>Company:</strong> ${escapeHTML(job.company)}</p>
+                    <p><strong>Work Type:</strong> ${escapeHTML(job.workType || 'On-site')}</p>
                     <p><strong>Salary:</strong> ${escapeHTML(job.salary)}</p>
                     <p><strong>Experience:</strong> ${escapeHTML(job.experience)} years</p>
                     <p><strong>Status:</strong> <span class="${badgeClass}">${badgeText}</span></p>

@@ -769,6 +769,10 @@ input[type="number"]::-webkit-outer-spin-button {
     z-index: 1;
 }
 
+.input-icon select {
+    padding-left: 42px !important;
+}
+
 #company-name-group {
     display: none;
 }
