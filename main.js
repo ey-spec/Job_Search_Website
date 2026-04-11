@@ -7,7 +7,25 @@
 ════════════════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', function () {
-    
+    // ── Theme Toggle ──
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme  = localStorage.getItem('theme');
+
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        if (themeToggle) themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            themeToggle.innerHTML = isLight
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
+        });
+    }
     const pendingToast = localStorage.getItem('showToast');
     if (pendingToast) {
         localStorage.removeItem('showToast');
@@ -321,6 +339,63 @@ document.addEventListener('DOMContentLoaded', function () {
        File: SHARED/index.html
     ════════════════════════════════════ */
     if (page === 'index.html') {
+        // ── Hero Flowing Grid Animation ──
+        const canvas = document.getElementById('hero-canvas');
+        const ctx    = canvas.getContext('2d');
+        let width, height, tick = 0;
+
+        function resizeCanvas() {
+            width  = canvas.width  = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function getAccentColor() {
+            return getComputedStyle(document.documentElement)
+                .getPropertyValue('--accent').trim() || '#818cf8';
+        }
+
+        function hexToRgba(hex, alpha) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(function(c){ return c+c; }).join('');
+            const r = parseInt(hex.substring(0,2), 16);
+            const g = parseInt(hex.substring(2,4), 16);
+            const b = parseInt(hex.substring(4,6), 16);
+            return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+        }
+
+        function isLightMode() {
+            return document.body.classList.contains('light-mode');
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+
+            const step   = 28;
+            const accent = getAccentColor();
+            const light  = isLightMode();
+
+            for (var x = 0; x <= width; x += step) {
+                for (var y = 0; y <= height; y += step) {
+                    var dx    = Math.sin(x * 0.04 + tick * 0.02) * 7;
+                    var dy    = Math.cos(y * 0.04 + tick * 0.015) * 7;
+                    var base  = light ? 0.25 : 0.35;
+                    var range = light ? 0.15 : 0.20;
+                    var alpha = base + Math.sin(x * 0.05 + y * 0.05 + tick * 0.02) * range;
+
+                    ctx.beginPath();
+                    ctx.arc(x + dx, y + dy, 1.6, 0, Math.PI * 2);
+                    ctx.fillStyle = hexToRgba(accent, alpha);
+                    ctx.fill();
+                }
+            }
+
+            tick++;
+            requestAnimationFrame(drawGrid);
+        }
+
+        drawGrid();
 
         const heroBtn   = document.getElementById('search-btn');
         const heroInput = document.getElementById('search-input');

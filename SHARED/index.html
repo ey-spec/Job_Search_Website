@@ -18,22 +18,29 @@
                 <img src="../images/logo.png" alt="CareerLink Logo">
             </a>
         </div>
-        <div class="nav-links"></div>
+        <div class="nav-right">
+            <div class="nav-links"></div>
+            <button type="button" id="theme-toggle" class="theme-toggle">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+        
     </div>
 </nav>
 
 <main>
     <section class="hero">
-        <h1>Find Your Link to Success</h1>
-        <p>Discover the perfect opportunity for your career growth.</p>
-        <div class="hero-buttons">
-            <a href="../SHARED/login.html" class="btn-primary">Login</a>
-            <a href="../SHARED/signup.html" class="btn-secondary">Sign Up</a>
-        </div>
-        <div class="hero-search">
-            <input type="text" id="search-input" placeholder="Search for jobs...">
-            <button type="button" id="search-btn">Search</button>
-        </div>
+    <canvas id="hero-canvas"></canvas>
+    <h1>Find Your Link to Success</h1>
+    <p>Discover the perfect opportunity for your career growth.</p>
+    <div class="hero-buttons">
+        <a href="../SHARED/login.html" class="btn-primary">Login</a>
+        <a href="../SHARED/signup.html" class="btn-secondary">Sign Up</a>
+    </div>
+    <div class="hero-search">
+        <input type="text" id="search-input" placeholder="Search for jobs...">
+        <button type="button" id="search-btn">Search</button>
+    </div>
     </section>
 
     <section class="stats">
