@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
         showToast(pendingToast);
     }
 
+    
+
     /* ─────────────────────────────────────
        UTILITY — page detection & paths
     ───────────────────────────────────── */
@@ -39,11 +41,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getAppliedJobs() {
-        return JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+        const username = localStorage.getItem('username');
+        return JSON.parse(localStorage.getItem('appliedJobs_' + username) || '[]');
     }
 
     function saveAppliedJobs(jobs) {
-        localStorage.setItem('appliedJobs', JSON.stringify(jobs));
+        const username = localStorage.getItem('username');
+        localStorage.setItem('appliedJobs_' + username, JSON.stringify(jobs));
+    }
+
+    function getSavedJobs() {
+        const username = localStorage.getItem('username');
+        return JSON.parse(localStorage.getItem('savedJobs_' + username) || '[]');
+    }
+
+    function saveSavedJobs(jobs) {
+        const username = localStorage.getItem('username');
+        localStorage.setItem('savedJobs_' + username, JSON.stringify(jobs));
     }
 
     function getUsers() {
@@ -69,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // ── Route protection ──
         const adminPages = ['admin-dashboard.html', 'add-job.html', 'edit-job.html', 'applicants.html'];
-       const userPages  = ['jobs.html', 'saved-jobs.html', 'applied-jobs.html', 'job-details.html', 'profile.html'];
+        const userPages  = ['jobs.html', 'saved-jobs.html', 'applied-jobs.html', 'job-details.html', 'profile.html'];
 
         if (adminPages.includes(page) && role !== 'admin') {
             window.location.href = path('SHARED/login.html');
@@ -88,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <a href="${path('USER/profile.html')}">Profile</a>
                 <a href="${path('SHARED/index.html')}" id="logout-btn">Logout</a>
             `;
-            } else if (role === 'user') {
+        } else if (role === 'user') {
             navLinks.innerHTML = `
                 <a href="${path('USER/jobs.html')}">Browse Jobs</a>
                 <a href="${path('USER/saved-jobs.html')}">Saved Jobs</a>
@@ -129,8 +143,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* ════════════════════════════════════
-    2. LOGIN PAGE
-    File: SHARED/login.html
+       2. LOGIN PAGE
+       File: SHARED/login.html
     ════════════════════════════════════ */
     if (page === 'login.html') {
         const form = document.querySelector('form');
@@ -330,6 +344,22 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
+        // ── Categories ──
+        const allJobsForCategories = getJobs();
+        document.querySelectorAll('.category-card').forEach(function (card) {
+            const category = card.dataset.category;
+            const count    = allJobsForCategories.filter(function (j) {
+                return j.category === category && j.status === 'open';
+            }).length;
+
+            const countEl = card.querySelector('.category-count');
+            if (countEl) countEl.textContent = count + (count === 1 ? ' job' : ' jobs');
+
+            card.addEventListener('click', function () {
+                window.location.href = path('USER/jobs.html') + '?category=' + category;
+            });
+        });
+
         // ── Stats counter animation ──
         document.querySelectorAll('.stat-number').forEach(function (el) {
             const raw    = el.textContent.trim();
@@ -374,8 +404,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* ════════════════════════════════════
-    5. JOBS PAGE
-    File: USER/jobs.html
+       5. JOBS PAGE
+       File: USER/jobs.html
     ════════════════════════════════════ */
     if (page === 'jobs.html') {
         const searchInput  = document.getElementById('search-input');
@@ -413,11 +443,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const query      = searchInput.value.trim().toLowerCase();
             const filterType = searchFilter.value;
             const sortType   = document.getElementById('sort-filter').value;
-            const statusType = document.getElementById('status-filter').value; 
+            const statusType = document.getElementById('status-filter').value;
             const allJobs    = getJobs();
 
             let filtered = allJobs.filter(function (job) {
-                // ── Check Search Query ──
                 let matchesQuery = true;
                 if (query) {
                     if (filterType === 'title') {
@@ -427,7 +456,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
 
-                // ── Check Status Filter ──
                 let matchesStatus = true;
                 if (statusType !== 'all') {
                     matchesStatus = job.status === statusType;
@@ -435,8 +463,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return matchesQuery && matchesStatus;
             });
-
-            
 
             // ── Sort ──
             if (sortType === 'salary-high') {
@@ -478,12 +504,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const heroQuery = new URLSearchParams(window.location.search).get('q');
         if (heroQuery) { searchInput.value = heroQuery; runSearch(); }
+
+        const categoryQuery = new URLSearchParams(window.location.search).get('category');
+        if (categoryQuery) {
+            const filtered = getJobs().filter(function (j) {
+                return j.category === categoryQuery;
+            });
+            renderJobs(filtered);
+            resultsInfo.innerHTML = 'Showing jobs in <strong>' + categoryQuery + '</strong> category.';
+        }
     }
 
 
     /* ════════════════════════════════════
-    6. JOB DETAILS PAGE
-    File: USER/job-details.html
+       6. JOB DETAILS PAGE
+       File: USER/job-details.html
     ════════════════════════════════════ */
     if (page === 'job-details.html') {
         const jobData = JSON.parse(localStorage.getItem('selectedJob') || 'null');
@@ -501,14 +536,15 @@ document.addEventListener('DOMContentLoaded', function () {
         statusEl.textContent = jobData.status === 'open' ? 'Open' : 'Closed';
         statusEl.className   = jobData.status === 'open' ? 'badge-open' : 'badge-closed';
 
-        const applyBtn    = document.getElementById('apply-btn');
+        const applyBtn = document.getElementById('apply-btn');
         if (!applyBtn) return;
-                // Save job functionality
+
+        // ── Save job functionality ──
         const saveBtn = document.getElementById('save-btn');
         if (saveBtn) {
-            const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+            const saved        = getSavedJobs();
             const alreadySaved = saved.some(function (j) { return j.id === jobData.id; });
-            
+
             if (alreadySaved) {
                 saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
                 saveBtn.classList.add('btn-saved');
@@ -516,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 saveBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     saved.push(jobData);
-                    localStorage.setItem('savedJobs', JSON.stringify(saved));
+                    saveSavedJobs(saved);
                     this.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
                     this.style.pointerEvents = 'none';
                     this.style.opacity = '0.6';
@@ -524,9 +560,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         }
+
         const applied        = getAppliedJobs();
         const alreadyApplied = applied.some(function (j) { return j.id === jobData.id; });
         const currentRole    = localStorage.getItem('role');
+
         const backBtn = document.getElementById('back-btn');
         if (backBtn && currentRole === 'admin') {
             backBtn.textContent = 'Back to Home';
@@ -535,21 +573,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function disableApplyBtn(text) {
             applyBtn.classList.add('btn-disabled');
-            applyBtn.textContent = text;  
+            applyBtn.textContent = text;
         }
 
         if (currentRole === 'admin') {
-        if (saveBtn) {
-            saveBtn.innerHTML = 'Admins cannot save';
-            saveBtn.classList.add('btn-disabled');
-            saveBtn.style.pointerEvents = 'none';
-            saveBtn.style.opacity = '0.6';
+            if (saveBtn) {
+                saveBtn.innerHTML = 'Admins cannot save';
+                saveBtn.classList.add('btn-disabled');
+                saveBtn.style.pointerEvents = 'none';
+                saveBtn.style.opacity = '0.6';
+            }
+            disableApplyBtn('Admins cannot apply');
+            return;
         }
-        disableApplyBtn('Admins cannot apply');
-        return;
-        }
-        if (jobData.status === 'closed') { disableApplyBtn('Position Closed');     return; }
-        if (alreadyApplied)              { disableApplyBtn('Already Applied');      return; }
+        if (jobData.status === 'closed') { disableApplyBtn('Position Closed'); return; }
+        if (alreadyApplied)              { disableApplyBtn('Already Applied');  return; }
 
         applyBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -663,17 +701,22 @@ document.addEventListener('DOMContentLoaded', function () {
                         // ── Remove job ──
                         saveJobs(jobs.filter(function (j) { return j.id !== jobId; }));
 
-                        // ── Remove from appliedJobs ──
-                        const applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
-                        localStorage.setItem('appliedJobs', JSON.stringify(
-                            applied.filter(function (j) { return j.id !== jobId; })
-                        ));
+                        // ── Remove from appliedJobs and savedJobs for all users ──
+                        const allUsers = getUsers();
+                        allUsers.forEach(function (u) {
+                            const appliedKey = 'appliedJobs_' + u.username;
+                            const savedKey   = 'savedJobs_'   + u.username;
 
-                        // ── Remove from savedJobs ──
-                        const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-                        localStorage.setItem('savedJobs', JSON.stringify(
-                            saved.filter(function (j) { return j.id !== jobId; })
-                        ));
+                            const applied = JSON.parse(localStorage.getItem(appliedKey) || '[]');
+                            localStorage.setItem(appliedKey, JSON.stringify(
+                                applied.filter(function (j) { return j.id !== jobId; })
+                            ));
+
+                            const saved = JSON.parse(localStorage.getItem(savedKey) || '[]');
+                            localStorage.setItem(savedKey, JSON.stringify(
+                                saved.filter(function (j) { return j.id !== jobId; })
+                            ));
+                        });
 
                         // ── Remove from jobApplications ──
                         const applications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
@@ -722,8 +765,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* ════════════════════════════════════
-    9. ADD JOB PAGE
-    File: ADMIN/add-job.html
+       9. ADD JOB PAGE
+       File: ADMIN/add-job.html
     ════════════════════════════════════ */
     if (page === 'add-job.html') {
         const form = document.querySelector('form');
@@ -745,10 +788,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 id:          newId,
                 title:       values.title,
                 company:     values.company,
-                workType:   document.getElementById('work-type').value,
+                workType:    values.workType,
                 salary:      '$' + Number(values.salary).toLocaleString(),
                 experience:  values.experience,
                 status:      values.status,
+                category:    values.category,
                 description: values.desc,
             });
             saveJobs(jobs);
@@ -778,10 +822,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('job-title').value           = jobToEdit.title;
         document.getElementById('company-name').value        = jobToEdit.company;
-        document.getElementById('work-type').value = jobToEdit.workType || '';
+        document.getElementById('work-type').value           = jobToEdit.workType || '';
         document.getElementById('salary').value              = jobToEdit.salary.replace(/[^0-9]/g, '');
         document.getElementById('years-of-experience').value = jobToEdit.experience;
         document.getElementById('job-status').value          = jobToEdit.status;
+        document.getElementById('job-category').value        = jobToEdit.category || '';
         document.getElementById('description').value         = jobToEdit.description;
 
         attachCharCounter();
@@ -803,62 +848,63 @@ document.addEventListener('DOMContentLoaded', function () {
                     salary:      '$' + Number(values.salary).toLocaleString(),
                     experience:  values.experience,
                     status:      values.status,
+                    category:    values.category,
                     description: values.desc,
                 };
             });
             saveJobs(updatedJobs);
-            
-            // ── Update savedJobs if this job was saved ──
-            const savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-            const updatedSaved = savedJobs.map(function (j) {
-                if (j.id !== editJobId) return j;
-                return {
-                    id:          j.id,
-                    title:       values.title,
-                    company:     values.company,
-                    workType:    values.workType,
-                    salary:      '$' + Number(values.salary).toLocaleString(),
-                    experience:  values.experience,
-                    status:      values.status,
-                    category:    values.category,
-                    description: values.desc,
-                };
-            });
-            localStorage.setItem('savedJobs', JSON.stringify(updatedSaved));
 
-            // ── Update appliedJobs if this job was applied to ──
-            const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
-            const updatedApplied = appliedJobs.map(function (j) {
-                if (j.id !== editJobId) return j;
-                return {
-                    id:          j.id,
-                    title:       values.title,
-                    company:     values.company,
-                    workType:    values.workType,
-                    salary:      '$' + Number(values.salary).toLocaleString(),
-                    experience:  values.experience,
-                    status:      values.status,
-                    category:    values.category,
-                    description: values.desc,
-                };
+            // ── Update savedJobs and appliedJobs for all users ──
+            const allUsers = getUsers();
+            allUsers.forEach(function (u) {
+                const savedKey   = 'savedJobs_'   + u.username;
+                const appliedKey = 'appliedJobs_' + u.username;
+
+                const savedJobs = JSON.parse(localStorage.getItem(savedKey) || '[]');
+                localStorage.setItem(savedKey, JSON.stringify(savedJobs.map(function (j) {
+                    if (j.id !== editJobId) return j;
+                    return {
+                        id:          j.id,
+                        title:       values.title,
+                        company:     values.company,
+                        workType:    values.workType,
+                        salary:      '$' + Number(values.salary).toLocaleString(),
+                        experience:  values.experience,
+                        status:      values.status,
+                        category:    values.category,
+                        description: values.desc,
+                    };
+                })));
+
+                const appliedJobs = JSON.parse(localStorage.getItem(appliedKey) || '[]');
+                localStorage.setItem(appliedKey, JSON.stringify(appliedJobs.map(function (j) {
+                    if (j.id !== editJobId) return j;
+                    return {
+                        id:          j.id,
+                        title:       values.title,
+                        company:     values.company,
+                        workType:    values.workType,
+                        salary:      '$' + Number(values.salary).toLocaleString(),
+                        experience:  values.experience,
+                        status:      values.status,
+                        category:    values.category,
+                        description: values.desc,
+                    };
+                })));
             });
-            localStorage.setItem('appliedJobs', JSON.stringify(updatedApplied));
 
             showSubmitSuccess('Changes Saved!');
             showToast('Job updated successfully!');
-                        
-                        showSubmitSuccess('Changes Saved!');
-                        showToast('Job updated successfully!');
-                        setTimeout(function () {
-                            window.location.href = path('ADMIN/admin-dashboard.html');
-                        }, 800);
-                    });
-                }
+            setTimeout(function () {
+                window.location.href = path('ADMIN/admin-dashboard.html');
+            }, 800);
+        });
+    }
 
 
     /* ════════════════════════════════════
-    11. APPLICANTS PAGE
-    File: ADMIN/applicants.html
+       11. APPLICANTS PAGE
+       File: ADMIN/applicants.html
     ════════════════════════════════════ */
     if (page === 'applicants.html') {
         const viewJobId = parseInt(localStorage.getItem('viewJobId'));
@@ -906,8 +952,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* ════════════════════════════════════
-    12. FORGOT PASSWORD PAGE
-    File: SHARED/forgot-password.html
+       12. FORGOT PASSWORD PAGE
+       File: SHARED/forgot-password.html
     ════════════════════════════════════ */
     if (page === 'forgot-password.html') {
         const form        = document.getElementById('forgot-form');
@@ -920,7 +966,7 @@ document.addEventListener('DOMContentLoaded', function () {
             clearAllErrors();
 
             const email = document.getElementById('email').value.trim();
-            if (!email)              { showError('email', 'Email is required.'); return; }
+            if (!email)               { showError('email', 'Email is required.'); return; }
             if (!isValidEmail(email)) { showError('email', 'Please enter a valid email address.'); return; }
 
             stepEmail.style.display   = 'none';
@@ -930,8 +976,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* ════════════════════════════════════
-    13. PROFILE PAGE
-    File: USER/profile.html
+       13. PROFILE PAGE
+       File: USER/profile.html
     ════════════════════════════════════ */
     if (page === 'profile.html') {
         const username = localStorage.getItem('username');
@@ -1009,7 +1055,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (displayName) displayName.textContent = newUsername;
 
-            // ── Update navbar if it shows username ──
             document.querySelectorAll('.nav-links a').forEach(function (link) {
                 if (link.href.split('/').pop() === 'profile.html') {
                     link.textContent = 'Profile';
@@ -1018,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const submitBtn = document.querySelector('#profile-form input[type="submit"]');
             if (submitBtn) {
-                submitBtn.value            = 'Saved!';
+                submitBtn.value = 'Saved!';
                 submitBtn.classList.add('btn-success');
                 setTimeout(function () {
                     submitBtn.value            = 'Save Changes';
@@ -1030,42 +1075,44 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('new-password').value         = '';
             document.getElementById('confirm-new-password').value = '';
         });
+
         // ── Delete Account ──
-    const deleteBtn = document.getElementById('delete-account-btn');
-    if (deleteBtn) {
-        deleteBtn.addEventListener('click', function () {
-            showConfirmModal('Delete your account? This cannot be undone.', function () {
-                const currentUsername = localStorage.getItem('username');
+        const deleteBtn = document.getElementById('delete-account-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function () {
+                showConfirmModal('Delete your account? This cannot be undone.', function () {
+                    const currentUsername = localStorage.getItem('username');
 
-                const allUsers = getUsers();
-                const updatedUsers = allUsers.filter(function (u) {
-                    return u.username !== currentUsername;
+                    const allUsers     = getUsers();
+                    const updatedUsers = allUsers.filter(function (u) {
+                        return u.username !== currentUsername;
+                    });
+                    saveUsers(updatedUsers);
+
+                    localStorage.removeItem('role');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('appliedJobs_' + currentUsername);
+                    localStorage.removeItem('savedJobs_'   + currentUsername);
+
+                    window.location.href = path('SHARED/index.html');
                 });
-                saveUsers(updatedUsers);
-
-                localStorage.removeItem('role');
-                localStorage.removeItem('username');
-                localStorage.removeItem('appliedJobs');
-                localStorage.removeItem('savedJobs');
-
-                window.location.href = path('SHARED/index.html');
             });
-        });
-    }
+        }
     }
 
 
     /* ════════════════════════════════════
-    SHARED — JOB FORM HELPERS
+       SHARED — JOB FORM HELPERS
     ════════════════════════════════════ */
     function getJobFormValues() {
         return {
             title:      document.getElementById('job-title').value.trim(),
             company:    document.getElementById('company-name').value.trim(),
-            workType:   document.getElementById('work-type').value,
+            workType:   document.getElementById('work-type')    ? document.getElementById('work-type').value    : '',
             salary:     document.getElementById('salary').value,
             experience: document.getElementById('years-of-experience').value,
             status:     document.getElementById('job-status').value,
+            category:   document.getElementById('job-category') ? document.getElementById('job-category').value : '',
             desc:       document.getElementById('description').value.trim(),
         };
     }
@@ -1077,8 +1124,8 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (v.title.length < 3) {
             showError('job-title', 'Job title must be at least 3 characters.'); valid = false;
         }
-        if (!v.company) { 
-        showError('company-name', 'Company name is required.'); valid = false;
+        if (!v.company) {
+            showError('company-name', 'Company name is required.'); valid = false;
         }
         if (v.salary === '' || Number(v.salary) < 0) {
             showError('salary', 'Please enter a valid salary.'); valid = false;
@@ -1101,11 +1148,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const textarea = document.getElementById('description');
         if (!textarea) return;
 
-        const counter         = document.createElement('p');
+        const counter     = document.createElement('p');
         counter.className = 'char-counter';
-        // and for warning:
         counter.classList.add('warning');
-        counter.textContent   = textarea.value.length + ' characters';
+        counter.textContent = textarea.value.length + ' characters';
         textarea.parentNode.insertAdjacentElement('afterend', counter);
 
         textarea.addEventListener('input', function () {
@@ -1117,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function showSubmitSuccess(text) {
         const submitBtn = document.querySelector('form input[type="submit"]');
         if (!submitBtn) return;
-        submitBtn.value            = text;
+        submitBtn.value = text;
         submitBtn.classList.add('btn-success');
     }
 
@@ -1290,9 +1336,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/"/g,  '&quot;')
             .replace(/'/g,  '&#039;');
     }
+
+
     /* ════════════════════════════════════
-    SAVED JOBS PAGE
-    File: USER/saved-jobs.html
+       SAVED JOBS PAGE
+       File: USER/saved-jobs.html
     ════════════════════════════════════ */
     if (page === 'saved-jobs.html') {
         const grid     = document.getElementById('saved-jobs-grid');
@@ -1300,8 +1348,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!grid || !emptyMsg) return;
 
         function renderSavedJobs() {
-            const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-            
+            const saved = getSavedJobs();
+
             if (saved.length === 0) {
                 grid.style.display     = 'none';
                 emptyMsg.style.display = 'block';
@@ -1316,18 +1364,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Unsave functionality
                 grid.querySelectorAll('.unsave-btn').forEach(function (btn) {
                     btn.addEventListener('click', function () {
-                        const card  = this.closest('.job-card');
-                        const jobId = parseInt(card.dataset.id);
+                        const card    = this.closest('.job-card');
+                        const jobId   = parseInt(card.dataset.id);
                         const updated = saved.filter(function (j) { return j.id !== jobId; });
-                        localStorage.setItem('savedJobs', JSON.stringify(updated));
-                        
+                        saveSavedJobs(updated);
+
                         card.style.transition = 'opacity 0.3s, transform 0.3s';
                         card.style.opacity    = '0';
                         card.classList.add('fade-out');
                         setTimeout(function () {
                             renderSavedJobs();
                         }, 300);
-                        
+
                         showToast('Job removed from saved');
                     });
                 });
