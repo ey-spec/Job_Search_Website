@@ -10,10 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Theme Toggle ──
     const themeToggle = document.getElementById('theme-toggle');
     const savedTheme  = localStorage.getItem('theme');
+    const logoImg     = document.getElementById('nav-logo-logo');
 
     if (savedTheme === 'light') {
         document.body.classList.add('light-mode');
         if (themeToggle) themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        if (logoImg) logoImg.src = logoImg.src.replace('logo.png', 'logo1.png');
     }
 
     if (themeToggle) {
@@ -24,6 +26,15 @@ document.addEventListener('DOMContentLoaded', function () {
             themeToggle.innerHTML = isLight
                 ? '<i class="fa-solid fa-sun"></i>'
                 : '<i class="fa-solid fa-moon"></i>';
+            
+            // Switch logo based on theme
+            if (logoImg) {
+                if (isLight) {
+                    logoImg.src = logoImg.src.replace('logo.png', 'logo1.png');
+                } else {
+                    logoImg.src = logoImg.src.replace('logo1.png', 'logo.png');
+                }
+            }
         });
     }
     const pendingToast = localStorage.getItem('showToast');
@@ -156,6 +167,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 localStorage.removeItem('viewJobId');
                 window.location.href = path('SHARED/index.html');
             });
+        }
+    })();
+
+    /* ════════════════════════════════════
+       SHARED — FOOTER AUTH LINKS
+       - Hide Login/Sign Up links in footer when user is logged in
+       - Show them when user is logged out
+       - Runs on ALL pages
+    ════════════════════════════════════ */
+    (function initFooterAuthLinks() {
+        const role = localStorage.getItem('role');
+        const footerLoginLink  = document.getElementById('footer-login-link');
+        const footerSignupLink = document.getElementById('footer-signup-link');
+
+        if (role) {
+            // User is logged in — hide auth links
+            if (footerLoginLink)  footerLoginLink.style.display  = 'none';
+            if (footerSignupLink) footerSignupLink.style.display = 'none';
+        } else {
+            // User is not logged in — show auth links
+            if (footerLoginLink)  footerLoginLink.style.display  = '';
+            if (footerSignupLink) footerSignupLink.style.display = '';
         }
     })();
 
@@ -339,6 +372,15 @@ document.addEventListener('DOMContentLoaded', function () {
        File: SHARED/index.html
     ════════════════════════════════════ */
     if (page === 'index.html') {
+        // ── Hero section: Show/hide Login/Sign Up buttons based on auth state ──
+        const role = localStorage.getItem('role');
+        const heroAuthButtons = document.getElementById('hero-auth-buttons');
+
+        if (role) {
+            if (heroAuthButtons) heroAuthButtons.style.display = 'none';
+        } else {
+            if (heroAuthButtons) heroAuthButtons.style.display = '';
+        }
         // ── Hero Flowing Grid Animation ──
         const canvas = document.getElementById('hero-canvas');
         const ctx    = canvas.getContext('2d');
@@ -419,21 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // ── Categories ──
-        const allJobsForCategories = getJobs();
-        document.querySelectorAll('.category-card').forEach(function (card) {
-            const category = card.dataset.category;
-            const count    = allJobsForCategories.filter(function (j) {
-                return j.category === category && j.status === 'open';
-            }).length;
-
-            const countEl = card.querySelector('.category-count');
-            if (countEl) countEl.textContent = count + (count === 1 ? ' job' : ' jobs');
-
-            card.addEventListener('click', function () {
-                window.location.href = path('USER/jobs.html') + '?category=' + category;
-            });
-        });
+        
 
         // ── Stats counter animation ──
         document.querySelectorAll('.stat-number').forEach(function (el) {
