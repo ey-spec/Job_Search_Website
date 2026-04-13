@@ -446,13 +446,15 @@ document.addEventListener('DOMContentLoaded', function () {
             heroBtn.addEventListener('click', function () {
                 const query = heroInput.value.trim();
                 if (!query) {
-                    heroInput.classList.add('input-error-shake');
-                    setTimeout(function () {
-                        heroInput.style.borderColor = '';
-                        heroInput.placeholder       = 'Search for jobs...';
-                    }, 2000);
-                    return;
-                }
+                        heroInput.classList.remove('input-error-shake');
+                        void heroInput.offsetWidth;
+                        heroInput.classList.add('input-error-shake');
+                        setTimeout(function () {
+                            heroInput.style.borderColor = '';
+                            heroInput.placeholder       = 'Search for jobs...';
+                        }, 2000);
+                        return;
+                    }
                 window.location.href = path('USER/jobs.html') + '?q=' + encodeURIComponent(query);
             });
 
@@ -1351,7 +1353,7 @@ document.addEventListener('DOMContentLoaded', function () {
         input.classList.remove('input-success');
 
         const error         = document.createElement('p');
-        error.className     = 'input-error';
+        error.className     = 'error-message';
         error.textContent   = message;
         error.style.cssText = 'color:#ff6b6b;font-size:12px;margin-top:6px;margin-bottom:0;';
 
@@ -1370,7 +1372,7 @@ document.addEventListener('DOMContentLoaded', function () {
         input.classList.remove('input-error');
 
         const msg         = document.createElement('p');
-        msg.className     = 'input-error';
+        msg.className     = 'success-message';
         msg.textContent   = message;
         msg.style.cssText = 'color:#00c864;font-size:12px;margin-top:6px;margin-bottom:0;';
 
@@ -1384,14 +1386,16 @@ document.addEventListener('DOMContentLoaded', function () {
         input.classList.remove('input-error', 'input-success');
         const parent   = input.closest('.input-icon') || input.parentNode;
         const existing = parent.nextElementSibling;
-        if (existing && existing.classList.contains('input-error')) existing.remove();
+        if ((existing && existing.classList.contains('error-message')) || (existing && existing.classList.contains('success-message'))) existing.remove();
     }
 
     function clearAllErrors() {
-        document.querySelectorAll('.input-error').forEach(function (el) { el.remove(); });
-        document.querySelectorAll('input, select, textarea').forEach(function (el) {
-            el.style.borderColor = '';
-            el.style.boxShadow   = '';
+    document.querySelectorAll('.error-message').forEach(function (el) { el.remove(); });
+    document.querySelectorAll('.success-message').forEach(function (el) { el.remove(); });
+    document.querySelectorAll('input, select, textarea').forEach(function (el) {
+        el.classList.remove('input-error', 'input-success');
+        el.style.borderColor = '';
+        el.style.boxShadow   = '';
         });
     }
 

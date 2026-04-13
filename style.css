@@ -1014,15 +1014,35 @@ input[type="number"]::-webkit-outer-spin-button {
 /* ════════════════════════════════════════
    12. JS — HELPERS
 ════════════════════════════════════════ */
-.input-error {
+.error-message {
     font-size: 12px;
     margin-top: 6px;
     margin-bottom: 0;
+    color: var(--danger);
+}
+
+.success-message {
+    font-size: 12px;
+    margin-top: 6px;
+    margin-bottom: 0;
+    color: var(--success-bright);
 }
 
 .job-actions a[style*="not-allowed"] {
     transform: none !important;
     box-shadow: none !important;
+}
+
+.input-error-shake {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(-8px); }
+    50%  { transform: translateX(8px); }
+    75%  { transform: translateX(-8px); }
+    100% { transform: translateX(0); }
 }
 
 
@@ -2361,13 +2381,6 @@ main {
 
 
 
-.about-image:hover img {
-    transform: scale(1.05);
-}
-
-.about-block-reverse {
-    flex-direction: row-reverse;
-}
 
 /* ── Danger Zone ── */
 .danger-zone h2 {
