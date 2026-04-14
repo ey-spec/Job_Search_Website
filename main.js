@@ -809,13 +809,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // ── Remove from appliedJobs and savedJobs for all users ──
                         const allUsers = getUsers();
                         allUsers.forEach(function (u) {
-                            const appliedKey = 'appliedJobs_' + u.username;
                             const savedKey   = 'savedJobs_'   + u.username;
-
-                            const applied = JSON.parse(localStorage.getItem(appliedKey) || '[]');
-                            localStorage.setItem(appliedKey, JSON.stringify(
-                                applied.filter(function (j) { return j.id !== jobId; })
-                            ));
 
                             const saved = JSON.parse(localStorage.getItem(savedKey) || '[]');
                             localStorage.setItem(savedKey, JSON.stringify(
