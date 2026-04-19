@@ -1,119 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <title>CareerLink - My Profile</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="../images/icon_dark.png">
-</head>
-<body>
-<nav>
-    <div class="nav-container">
+    <link rel="stylesheet" href="../style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/x-icon" href="../images/icon_dark.png" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
         <div class="nav-logo">
-            <a href="../SHARED/index.html">
-                <img src="../images/logo.png" alt="CareerLink Logo" id="nav-logo-logo">
-            </a>
+          <a href="../SHARED/index.html">
+            <img
+              src="../images/logo.png"
+              alt="CareerLink Logo"
+              id="nav-logo-logo"
+            />
+          </a>
         </div>
         <div class="nav-right">
-            <div class="nav-links"></div>
-            <button type="button" id="theme-toggle" class="theme-toggle">
-                <i class="fa-solid fa-moon"></i>
-            </button>
+          <div class="nav-links"></div>
+          <button type="button" id="theme-toggle" class="theme-toggle">
+            <i class="fa-solid fa-moon"></i>
+          </button>
         </div>
-    </div>
-</nav>
-<main>
-    <div class="profile-container">
+      </div>
+    </nav>
+    <main>
+      <div class="profile-container">
         <div class="profile-header">
-            <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
-            <div class="profile-header-info">
-                <h1 id="profile-display-name"></h1>
-                <span id="profile-display-role" class="profile-role-badge"></span>
-            </div>
+          <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+          <div class="profile-header-info">
+            <h1 id="profile-display-name"></h1>
+            <span id="profile-display-role" class="profile-role-badge"></span>
+          </div>
         </div>
         <div class="profile-card">
-            <h2>Account Details</h2>
-            <form id="profile-form">
-                <div class="form-group">
-                    <label for="profile-username">Username:</label>
-                    <div class="input-icon">
-                        <i class="fa-solid fa-user" aria-hidden="true"></i>
-                        <input type="text" id="profile-username" name="username" placeholder="Your username" minlength="3" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="profile-email">Email:</label>
-                    <div class="input-icon">
-                        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-                        <input type="email" id="profile-email" name="email" placeholder="Your email" required>
-                    </div>
-                </div>
-                <div class="profile-section-divider">
-                    <span>Change Password <small>(leave blank to keep current)</small></span>
-                </div>
-                <div class="form-group">
-                    <label for="current-password">Current Password:</label>
-                    <div class="input-icon">
-                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                        <input type="password" id="current-password" name="current_password" placeholder="Enter current password" minlength="8">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="new-password">New Password:</label>
-                    <div class="input-icon">
-                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                        <input type="password" id="new-password" name="new_password" placeholder="Minimum 8 characters" minlength="8">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="confirm-new-password">Confirm New Password:</label>
-                    <div class="input-icon">
-                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                        <input type="password" id="confirm-new-password" name="confirm_new_password" placeholder="Repeat new password" minlength="8">
-                    </div>
-                </div>
-                <div class="form-group profile-actions">
-                    <input type="submit" value="Save Changes">
-                </div>
-            </form>
+          <h2>Account Details</h2>
+          <form id="profile-form">
+            <div class="form-group">
+              <label for="profile-username">Username:</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-user" aria-hidden="true"></i>
+                <input
+                  type="text"
+                  id="profile-username"
+                  name="username"
+                  placeholder="Your username"
+                  minlength="3"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="profile-email">Email:</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                <input
+                  type="email"
+                  id="profile-email"
+                  name="email"
+                  placeholder="Your email"
+                  required
+                />
+              </div>
+            </div>
+            <div class="profile-section-divider">
+              <span
+                >Change Password
+                <small>(leave blank to keep current)</small></span
+              >
+            </div>
+            <div class="form-group">
+              <label for="current-password">Current Password:</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                <input
+                  type="password"
+                  id="current-password"
+                  name="current_password"
+                  placeholder="Enter current password"
+                  minlength="8"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="new-password">New Password:</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                <input
+                  type="password"
+                  id="new-password"
+                  name="new_password"
+                  placeholder="Minimum 8 characters"
+                  minlength="8"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirm-new-password">Confirm New Password:</label>
+              <div class="input-icon">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                <input
+                  type="password"
+                  id="confirm-new-password"
+                  name="confirm_new_password"
+                  placeholder="Repeat new password"
+                  minlength="8"
+                />
+              </div>
+            </div>
+            <div class="form-group profile-actions">
+              <input type="submit" value="Save Changes" />
+            </div>
+          </form>
         </div>
         <div class="profile-card" id="profile-stats-card">
-            <h2>My Activity</h2>
-            <div class="profile-stats">
-                <div class="profile-stat">
-                    <span class="profile-stat-number" id="applied-count">0</span>
-                    <p>Jobs Applied</p>
-                </div>
+          <h2>My Activity</h2>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <span class="profile-stat-number" id="applied-count">0</span>
+              <p>Jobs Applied</p>
             </div>
+          </div>
         </div>
         <div class="profile-card danger-zone">
-            <h2>Danger Zone</h2>
-            <p>Deleting your account is permanent and cannot be undone.</p>
-            <button type="button" id="delete-account-btn" class="btn-danger">Delete My Account</button>
+          <h2>Danger Zone</h2>
+          <p>Deleting your account is permanent and cannot be undone.</p>
+          <button type="button" id="delete-account-btn" class="btn-danger">
+            Delete My Account
+          </button>
         </div>
-    </div>
-</main>
-<footer>
-    <div class="footer-content">
+      </div>
+    </main>
+    <footer>
+      <div class="footer-content">
         <div class="footer-brand">
-            <p>Linking talent with opportunity.</p>
-            <div class="footer-socials">
-                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-            </div>
+          <p>Linking talent with opportunity.</p>
+          <div class="footer-socials">
+            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          </div>
         </div>
         <div class="footer-nav">
-            <a href="../USER/jobs.html">Browse Jobs</a>
-            <a href="../SHARED/about.html">About</a>
-            <a href="../SHARED/terms.html">Terms</a>
-            <a href="../SHARED/login.html" id="footer-login-link">Login</a>
-            <a href="../SHARED/signup.html" id="footer-signup-link">Sign Up</a>
-            <a href="mailto:eyadh3415@gmail.com">Contact Us</a>
+          <a href="../USER/jobs.html">Browse Jobs</a>
+          <a href="../SHARED/about.html">About</a>
+          <a href="../SHARED/terms.html">Terms</a>
+          <a href="../SHARED/login.html" id="footer-login-link">Login</a>
+          <a href="../SHARED/signup.html" id="footer-signup-link">Sign Up</a>
+          <a href="mailto:eyadh3415@gmail.com">Contact Us</a>
         </div>
-    </div>
-    <div class="footer-bottom"><p>© 2026 CareerLink. All rights reserved.</p></div>
-</footer>
-<script src="../main.js"></script>
-</body>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 CareerLink. All rights reserved.</p>
+      </div>
+    </footer>
+    <script src="../main.js"></script>
+  </body>
 </html>
