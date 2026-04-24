@@ -1,0 +1,22 @@
+# Virtual Environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables (secret keys)
+.env
+
+# Database
+db.sqlite3
+*.sqlite3
+
+# VS Code settings
+.vscode/
+
+# Windows system files
+Thumbs.db
+desktop.ini
