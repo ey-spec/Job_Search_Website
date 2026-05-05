@@ -3,22 +3,29 @@ from django.contrib.auth.models import AbstractUser
 
 # ─────────────────────────────────────────
 # CustomUser Model — represents a user in the system
-# extends Django's built-in AbstractUser so we get
-# username, email, password, is_active, date_joined etc. for free
-# maps to the "users_customuser" table in the database
+# extends Django's built-in AbstractUser
+# login is by email + password
+# username is just a display name — can repeat
 # ─────────────────────────────────────────
 class CustomUser(AbstractUser):
 
+    # override username — just a display name, can repeat
+    username = models.CharField(max_length=150)
+
+    # email is the unique identifier — no two users can have the same email
+    email = models.EmailField(unique=True)
+
+    # tell Django to use email as the login field instead of username
+    USERNAME_FIELD = 'email'
+
+    # required fields when creating a superuser
+    REQUIRED_FIELDS = ['username']
+
     # is this user a company admin or a regular user?
-    # default is False — every new user is a regular user unless they choose admin
     is_company_admin = models.BooleanField(default=False)
 
-    # the company name — only filled in by admins
-    # blank=True → allowed to be empty in forms
-    # null=True  → allowed to be NULL in the database
-    # both together make this field completely optional
+    # only filled in by admins
     company_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        # displayed in admin panel e.g. "Eyad"
-        return self.username
+        return self.email

@@ -93,3 +93,36 @@ class Application(models.Model):
     def __str__(self):
         # displayed in admin panel e.g. "Eyad applied to Software Engineer"
         return f"{self.user.username} applied to {self.job.title}"
+        
+
+
+
+# ─────────────────────────────────────────
+# SavedJob Model — represents a user saving a job
+# maps to the "jobs_savedjob" table in the database
+# ─────────────────────────────────────────
+class SavedJob(models.Model):
+
+    # the user who saved the job
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='saved_jobs'
+    )
+
+    # the job that was saved
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE,
+        related_name='saved_by'
+    )
+
+    # automatically set when the job was saved
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # a user can only save the same job once
+        unique_together = ('user', 'job')
+
+    def __str__(self):
+        return f"{self.user.email} saved {self.job.title}"
