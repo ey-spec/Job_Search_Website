@@ -72,7 +72,10 @@ class JobListCreateView(APIView):
         serializer = JobSerializer(data=request.data)
         if serializer.is_valid():
             # automatically set created_by to the logged in admin
-            serializer.save(created_by=request.user)
+            serializer.save(
+                created_by=request.user,
+                company_name=request.user.company_name
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -119,10 +122,10 @@ class JobDetailView(APIView):
             )
         
         
-        # only admins from the same company can edit the job
-        if job.created_by.company_name != request.user.company_name:
+        # only admins who created the job can edit it
+        if job.created_by != request.user:
             return Response(
-                {'error': 'You can only edit jobs from your own company'},
+                {'error': 'You can only edit jobs you created'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -147,10 +150,10 @@ class JobDetailView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # only admins from the same company can delete the job
-        if job.created_by.company_name != request.user.company_name:
+        # only admins who created the job can delete it
+        if job.created_by != request.user:
             return Response(
-                {'error': 'You can only delete jobs from your own company'},
+                {'error': 'You can only delete jobs you created'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -177,7 +180,7 @@ class AdminJobListView(APIView):
             )
 
         # return only jobs created by this admin
-        jobs = Job.objects.all()
+        jobs = Job.objects.filter(created_by=request.user)
         serializer = JobSerializer(jobs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -267,10 +270,10 @@ class JobApplicantsView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # only the admin who from the same company can see its applicants
-        if job.created_by.company_name != request.user.company_name:
+        # only the admin who created the job can see its applicants
+        if job.created_by != request.user:
             return Response(
-                {'error': 'You can only view applicants for your company jobs'},
+                {'error': 'You can only view applicants for jobs you created'},
                 status=status.HTTP_403_FORBIDDEN
             )
 

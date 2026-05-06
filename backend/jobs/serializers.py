@@ -30,6 +30,7 @@ class JobSerializer(serializers.ModelSerializer):
             # these fields are set automatically, never sent by the frontend
             'created_at': {'read_only': True},
             'created_by': {'read_only': True},
+            'company_name': {'required': False},
         }
 
     def validate_salary(self, value):

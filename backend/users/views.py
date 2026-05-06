@@ -155,6 +155,11 @@ class ProfileView(APIView):
                 )
             user.email = email
 
+        # update company name if admin
+        company_name = data.get('company_name', None)
+        if company_name and request.user.is_company_admin:
+            user.company_name = company_name
+
         # update password if provided
         current_password = data.get('current_password', None)
         new_password = data.get('new_password', None)
