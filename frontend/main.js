@@ -6,7 +6,38 @@
    localStorage.
 ════════════════════════════════════════ */
 
+/* ─────────────────────────────────────
+   API CONFIG
+───────────────────────────────────── */
+const API = "http://127.0.0.1:8000/api";
+
+function getCookie(name) {
+  const value = "; " + document.cookie;
+  const parts = value.split("; " + name + "=");
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+}
+
+function getCSRF() {
+  return getCookie("csrftoken");
+}
+
+// ── fetch CSRF token from Django on page load ──
+async function initCSRF() {
+  try {
+    await fetch("http://127.0.0.1:8000/api/auth/me/", {
+      credentials: "include",
+    });
+  } catch (err) {
+    console.log("CSRF init:", err);
+  }
+}
+
+initCSRF();
+
+
 document.addEventListener("DOMContentLoaded", function () {
+
   // ── Theme Toggle ──
   const themeToggle = document.getElementById("theme-toggle");
   const savedTheme = localStorage.getItem("theme");
@@ -96,14 +127,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ════════════════════════════════════
-       1. NAVBAR
-       - Dynamic links based on role
-       - Active link highlight
-       - Route protection
-       - Logout
-    ════════════════════════════════════ */
+     1. NAVBAR
+     - Dynamic links based on role
+     - Active link highlight
+     - Route protection
+     - Logout
+  ════════════════════════════════════ */
   (function initNavbar() {
-    const role = localStorage.getItem("role");
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    const isAdmin = currentUser && currentUser.is_company_admin;
     const navLinks = document.querySelector(".nav-links");
     if (!navLinks) return;
 
@@ -122,38 +154,38 @@ document.addEventListener("DOMContentLoaded", function () {
       "profile.html",
     ];
 
-    if (adminPages.includes(page) && role !== "admin") {
+    if (adminPages.includes(page) && !isAdmin) {
       window.location.href = path("SHARED/login.html");
       return;
     }
-    if (userPages.includes(page) && role !== "user" && role !== "admin") {
+    if (userPages.includes(page) && !currentUser) {
       window.location.href = path("SHARED/login.html");
       return;
     }
 
     // ── Build nav based on role ──
-    if (role === "admin") {
+    if (isAdmin) {
       navLinks.innerHTML = `
-                <a href="${path("ADMIN/admin-dashboard.html")}">My Jobs</a>
-                <a href="${path("ADMIN/add-job.html")}">Add Job</a>
-                <a href="${path("USER/profile.html")}">Profile</a>
-                <a href="${path("SHARED/index.html")}" id="logout-btn">Logout</a>
-            `;
-    } else if (role === "user") {
+        <a href="${path("ADMIN/admin-dashboard.html")}">My Jobs</a>
+        <a href="${path("ADMIN/add-job.html")}">Add Job</a>
+        <a href="${path("USER/profile.html")}">Profile</a>
+        <a href="#" id="logout-btn">Logout</a>
+      `;
+    } else if (currentUser) {
       navLinks.innerHTML = `
-                <a href="${path("USER/jobs.html")}">Browse Jobs</a>
-                <a href="${path("USER/saved-jobs.html")}">Saved Jobs</a>
-                <a href="${path("USER/applied-jobs.html")}">Applied Jobs</a>
-                <a href="${path("USER/profile.html")}">Profile</a>
-                <a href="${path("SHARED/index.html")}" id="logout-btn">Logout</a>
-            `;
+        <a href="${path("USER/jobs.html")}">Browse Jobs</a>
+        <a href="${path("USER/saved-jobs.html")}">Saved Jobs</a>
+        <a href="${path("USER/applied-jobs.html")}">Applied Jobs</a>
+        <a href="${path("USER/profile.html")}">Profile</a>
+        <a href="#" id="logout-btn">Logout</a>
+      `;
     } else {
       navLinks.innerHTML = `
-                <a href="${path("USER/jobs.html")}">Browse Jobs</a>
-                <a href="${path("SHARED/about.html")}">About</a>
-                <a href="${path("SHARED/login.html")}">Login</a>
-                <a href="${path("SHARED/signup.html")}">Sign Up</a>
-            `;
+        <a href="${path("USER/jobs.html")}">Browse Jobs</a>
+        <a href="${path("SHARED/about.html")}">About</a>
+        <a href="${path("SHARED/login.html")}">Login</a>
+        <a href="${path("SHARED/signup.html")}">Sign Up</a>
+      `;
     }
 
     // ── Active link highlight ──
@@ -166,10 +198,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // ── Logout ──
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) {
-      logoutBtn.addEventListener("click", function (e) {
+      logoutBtn.addEventListener("click", async function (e) {
         e.preventDefault();
-        localStorage.removeItem("role");
-        localStorage.removeItem("username");
+        try {
+          await fetch(API + "/auth/logout/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRF(),
+            },
+            credentials: "include",
+          });
+        } catch (err) {
+          console.log("Logout error:", err);
+        }
+        localStorage.removeItem("currentUser");
         localStorage.removeItem("selectedJob");
         localStorage.removeItem("editJobId");
         localStorage.removeItem("viewJobId");
@@ -201,39 +244,39 @@ document.addEventListener("DOMContentLoaded", function () {
   })();
 
   /* ════════════════════════════════════
-       2. LOGIN PAGE
-       File: SHARED/login.html
-    ════════════════════════════════════ */
+     2. LOGIN PAGE
+     File: SHARED/login.html
+  ════════════════════════════════════ */
   if (page === "login.html") {
     const form = document.querySelector("form");
     if (!form) return;
 
-    const role = localStorage.getItem("role");
-    if (role === "admin") {
-      window.location.href = path("ADMIN/admin-dashboard.html");
-      return;
-    }
-    if (role === "user") {
-      window.location.href = path("USER/jobs.html");
+    // ── redirect if already logged in ──
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser) {
+      if (currentUser.is_company_admin) {
+        window.location.href = path("ADMIN/admin-dashboard.html");
+      } else {
+        window.location.href = path("USER/jobs.html");
+      }
       return;
     }
 
-    document.querySelectorAll(".social-btn").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        alert("Social login requires a backend. Coming soon!");
-      });
-    });
-
-    form.addEventListener("submit", function (e) {
+    // ── form submit ──
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
       clearAllErrors();
 
-      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       let valid = true;
 
-      if (!username) {
-        showError("username", "Username is required.");
+      // ── frontend validation ──
+      if (!email) {
+        showError("email", "Email is required.");
+        valid = false;
+      } else if (!isValidEmail(email)) {
+        showError("email", "Please enter a valid email address.");
         valid = false;
       }
       if (!password) {
@@ -245,46 +288,69 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       if (!valid) return;
 
-      const users = getUsers();
-      const match = users.find(function (u) {
-        return u.username === username && u.password === password;
-      });
+      // ── send to backend ──
+      try {
+        const response = await fetch(API + "/auth/login/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRF(),
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
 
-      if (!match) {
-        showError("password", "Invalid username or password.");
-        return;
-      }
+        const data = await response.json();
 
-      localStorage.setItem("role", match.role);
-      localStorage.setItem("username", match.username);
+        if (response.ok) {
+          // ── save user info to localStorage ──
+          localStorage.setItem("currentUser", JSON.stringify(data.user));
+          localStorage.setItem("showToast", "✓ Logged in successfully!");
 
-      localStorage.setItem("showToast", "✓ Logged in successfully!");
-      if (match.role === "admin") {
-        window.location.href = path("ADMIN/admin-dashboard.html");
-      } else {
-        window.location.href = path("USER/jobs.html");
+          // ── redirect based on role ──
+          if (data.user.is_company_admin) {
+            window.location.href = path("ADMIN/admin-dashboard.html");
+          } else {
+            window.location.href = path("USER/jobs.html");
+          }
+        } else {
+          if (data.non_field_errors) {
+            showError("password", data.non_field_errors[0]);
+          } else if (data.error) {
+            showError("password", data.error);
+          } else {
+            showError("password", "Invalid email or password.");
+          }
+        }
+      } catch (err) {
+        showToast("Connection error. Make sure the server is running.");
       }
     });
   }
 
   /* ════════════════════════════════════
-       3. SIGNUP PAGE
-       File: SHARED/signup.html
-    ════════════════════════════════════ */
+     3. SIGNUP PAGE
+     File: SHARED/signup.html
+  ════════════════════════════════════ */
   if (page === "signup.html") {
     const form = document.querySelector("form");
     if (!form) return;
 
-    const role = localStorage.getItem("role");
-    if (role === "admin") {
-      window.location.href = path("ADMIN/admin-dashboard.html");
-      return;
-    }
-    if (role === "user") {
-      window.location.href = path("USER/jobs.html");
+    // ── redirect if already logged in ──
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+    if (currentUser) {
+      if (currentUser.is_company_admin) {
+        window.location.href = path("ADMIN/admin-dashboard.html");
+      } else {
+        window.location.href = path("USER/jobs.html");
+      }
       return;
     }
 
+    // ── show/hide company name based on admin radio ──
     const radios = document.querySelectorAll('input[name="is_company_admin"]');
     const companyGroup = document.getElementById("company-name-group");
     const companyInput = document.getElementById("company-name");
@@ -303,20 +369,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    document.querySelectorAll(".social-btn").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        alert("Social signup requires a backend. Coming soon!");
-      });
-    });
-
+    // ── password strength ──
     const passwordInput = document.getElementById("password");
     const confirmInput = document.getElementById("confirm-password");
 
     passwordInput.addEventListener("input", function () {
-      if (this.value === "") {
-        clearError("password");
-        return;
-      }
+      if (this.value === "") { clearError("password"); return; }
       const strength = getPasswordStrength(this.value);
       if (strength === "weak") {
         showError("password", "Weak — add uppercase, numbers or symbols.");
@@ -328,10 +386,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     confirmInput.addEventListener("input", function () {
-      if (this.value === "") {
-        clearError("confirm-password");
-        return;
-      }
+      if (this.value === "") { clearError("confirm-password"); return; }
       if (this.value !== passwordInput.value) {
         showError("confirm-password", "Passwords do not match.");
       } else {
@@ -339,7 +394,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    form.addEventListener("submit", function (e) {
+    // ── form submit ──
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
       clearAllErrors();
 
@@ -347,48 +403,20 @@ document.addEventListener("DOMContentLoaded", function () {
       const email = document.getElementById("email").value.trim();
       const password = passwordInput.value;
       const confirmPassword = confirmInput.value;
-      const isAdmin = document.querySelector(
-        'input[name="is_company_admin"]:checked',
-      ).value;
+      const isAdmin = document.querySelector('input[name="is_company_admin"]:checked').value;
       const companyName = companyInput.value.trim();
       let valid = true;
 
-      if (!username) {
-        showError("username", "Username is required.");
-        valid = false;
-      } else if (username.length < 3) {
+      // ── frontend validation ──
+      if (!username || username.length < 3) {
         showError("username", "Username must be at least 3 characters.");
         valid = false;
       }
-
-      const users = getUsers();
-      if (
-        users.some(function (u) {
-          return u.username === username;
-        })
-      ) {
-        showError("username", "Username already exists.");
-        valid = false;
-      }
-      if (!email) {
-        showError("email", "Email is required.");
-        valid = false;
-      } else if (!isValidEmail(email)) {
+      if (!email || !isValidEmail(email)) {
         showError("email", "Please enter a valid email address.");
         valid = false;
       }
-      if (
-        users.some(function (u) {
-          return u.email === email;
-        })
-      ) {
-        showError("email", "Email already registered.");
-        valid = false;
-      }
-      if (!password) {
-        showError("password", "Password is required.");
-        valid = false;
-      } else if (password.length < 8) {
+      if (!password || password.length < 8) {
         showError("password", "Password must be at least 8 characters.");
         valid = false;
       }
@@ -405,17 +433,42 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       if (!valid) return;
 
-      users.push({
-        username: username,
-        email: email,
-        password: password,
-        role: isAdmin === "yes" ? "admin" : "user",
-        company: companyName,
-      });
-      saveUsers(users);
+      // ── send to backend ──
+      try {
+        const response = await fetch(API + "/auth/register/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRF(),
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            username: username,
+            email: email,
+            password: password,
+            confirm_password: confirmPassword,
+            is_company_admin: isAdmin === "yes",
+            company_name: companyName,
+          }),
+        });
 
-      localStorage.setItem("showToast", "✓ Account created successfully!");
-      window.location.href = path("SHARED/login.html");
+        const data = await response.json();
+
+        if (response.ok) {
+          // ── success ──
+          localStorage.setItem("showToast", "✓ Account created successfully!");
+          window.location.href = path("SHARED/login.html");
+        } else {
+          // ── show backend errors ──
+          if (data.email) showError("email", data.email[0]);
+          if (data.username) showError("username", data.username[0]);
+          if (data.password) showError("password", data.password[0]);
+          if (data.company_name) showError("company-name", data.company_name[0]);
+          if (data.non_field_errors) showError("confirm-password", data.non_field_errors[0]);
+        }
+      } catch (err) {
+        showToast("Connection error. Make sure the server is running.");
+      }
     });
   }
 
