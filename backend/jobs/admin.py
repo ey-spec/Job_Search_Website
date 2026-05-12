@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import Job, Application
 from .models import Job, Application, SavedJob
 
 # register Job in the admin panel
