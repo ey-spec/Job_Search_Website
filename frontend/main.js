@@ -679,6 +679,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const currentUser = getCurrentUser();
 
+    // If admin visits job details, change back button to go home
+const backBtn = document.getElementById("back-btn");
+if (backBtn && currentUser && currentUser.is_company_admin) {
+  backBtn.textContent = "Back to Home";
+  backBtn.href = "../SHARED/index.html";
+}
+
     // Load job details from backend
     fetch(API + "/jobs/" + jobId + "/", { credentials: "include" })
       .then((r) => r.json())
