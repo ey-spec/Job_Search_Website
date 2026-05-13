@@ -26,9 +26,7 @@ async function initCSRF() {
 }
 initCSRF();
 
-
 document.addEventListener("DOMContentLoaded", function () {
-
   /* ─────────────────────────────────────
      THEME TOGGLE (dark/light mode)
   ───────────────────────────────────── */
@@ -89,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return JSON.parse(localStorage.getItem("currentUser") || "null");
   }
 
-
   /* ════════════════════════════════════
      1. NAVBAR
      Builds navigation links based on whether
@@ -103,9 +100,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ── Route protection ──
     // These pages require admin login
-    const adminPages = ["admin-dashboard.html", "add-job.html", "edit-job.html", "applicants.html"];
+    const adminPages = [
+      "admin-dashboard.html",
+      "add-job.html",
+      "edit-job.html",
+      "applicants.html",
+    ];
     // These pages require any login
-    const userPages = ["jobs.html", "saved-jobs.html", "applied-jobs.html", "job-details.html", "profile.html"];
+    const userPages = [
+      "jobs.html",
+      "saved-jobs.html",
+      "applied-jobs.html",
+      "job-details.html",
+      "profile.html",
+    ];
 
     if (adminPages.includes(page) && !isAdmin) {
       window.location.href = path("SHARED/login.html");
@@ -155,10 +163,15 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
           await fetch(API + "/auth/logout/", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRF(),
+            },
             credentials: "include",
           });
-        } catch (err) { /* ignore */ }
+        } catch (err) {
+          /* ignore */
+        }
         localStorage.removeItem("currentUser");
         localStorage.removeItem("selectedJobId");
         localStorage.removeItem("editJobId");
@@ -181,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function () {
       if (footerSignupLink) footerSignupLink.style.display = "none";
     }
   })();
-
 
   /* ════════════════════════════════════
      2. LOGIN PAGE
@@ -210,15 +222,24 @@ document.addEventListener("DOMContentLoaded", function () {
       const password = document.getElementById("password").value;
       let valid = true;
 
-      if (!email || !isValidEmail(email)) { showError("email", "Please enter a valid email."); valid = false; }
-      if (!password || password.length < 8) { showError("password", "Password must be at least 8 characters."); valid = false; }
+      if (!email || !isValidEmail(email)) {
+        showError("email", "Please enter a valid email.");
+        valid = false;
+      }
+      if (!password || password.length < 8) {
+        showError("password", "Password must be at least 8 characters.");
+        valid = false;
+      }
       if (!valid) return;
 
       try {
         // Send login request to Django
         const response = await fetch(API + "/auth/login/", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRF(),
+          },
           credentials: "include", // important: sends/receives session cookies
           body: JSON.stringify({ email, password }),
         });
@@ -233,9 +254,10 @@ document.addEventListener("DOMContentLoaded", function () {
             ? path("ADMIN/admin-dashboard.html")
             : path("USER/jobs.html");
         } else {
-          const errMsg = data.error
-            || (data.non_field_errors && data.non_field_errors[0])
-            || "Invalid email or password.";
+          const errMsg =
+            data.error ||
+            (data.non_field_errors && data.non_field_errors[0]) ||
+            "Invalid email or password.";
           showError("password", errMsg);
         }
       } catch (err) {
@@ -243,7 +265,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
-
 
   /* ════════════════════════════════════
      3. SIGNUP PAGE
@@ -286,16 +307,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const confirmInput = document.getElementById("confirm-password");
 
     passwordInput.addEventListener("input", function () {
-      if (!this.value) { clearError("password"); return; }
+      if (!this.value) {
+        clearError("password");
+        return;
+      }
       const s = getPasswordStrength(this.value);
-      if (s === "weak") showError("password", "Weak — add uppercase, numbers or symbols.");
+      if (s === "weak")
+        showError("password", "Weak — add uppercase, numbers or symbols.");
       else if (s === "medium") showSuccess("password", "Medium strength.");
       else showSuccess("password", "Strong password.");
     });
 
     confirmInput.addEventListener("input", function () {
-      if (!this.value) { clearError("confirm-password"); return; }
-      if (this.value !== passwordInput.value) showError("confirm-password", "Passwords do not match.");
+      if (!this.value) {
+        clearError("confirm-password");
+        return;
+      }
+      if (this.value !== passwordInput.value)
+        showError("confirm-password", "Passwords do not match.");
       else showSuccess("confirm-password", "Passwords match.");
     });
 
@@ -307,22 +336,44 @@ document.addEventListener("DOMContentLoaded", function () {
       const email = document.getElementById("email").value.trim();
       const password = passwordInput.value;
       const confirmPassword = confirmInput.value;
-      const isAdminVal = document.querySelector('input[name="is_company_admin"]:checked').value;
+      const isAdminVal = document.querySelector(
+        'input[name="is_company_admin"]:checked',
+      ).value;
       const companyName = companyInput.value.trim();
       let valid = true;
 
-      if (!username || username.length < 3) { showError("username", "Username must be at least 3 characters."); valid = false; }
-      if (!email || !isValidEmail(email)) { showError("email", "Please enter a valid email."); valid = false; }
-      if (!password || password.length < 8) { showError("password", "Password must be at least 8 characters."); valid = false; }
-      if (!confirmPassword) { showError("confirm-password", "Please confirm your password."); valid = false; }
-      else if (password !== confirmPassword) { showError("confirm-password", "Passwords do not match."); valid = false; }
-      if (isAdminVal === "yes" && !companyName) { showError("company-name", "Company name is required."); valid = false; }
+      if (!username || username.length < 3) {
+        showError("username", "Username must be at least 3 characters.");
+        valid = false;
+      }
+      if (!email || !isValidEmail(email)) {
+        showError("email", "Please enter a valid email.");
+        valid = false;
+      }
+      if (!password || password.length < 8) {
+        showError("password", "Password must be at least 8 characters.");
+        valid = false;
+      }
+      if (!confirmPassword) {
+        showError("confirm-password", "Please confirm your password.");
+        valid = false;
+      } else if (password !== confirmPassword) {
+        showError("confirm-password", "Passwords do not match.");
+        valid = false;
+      }
+      if (isAdminVal === "yes" && !companyName) {
+        showError("company-name", "Company name is required.");
+        valid = false;
+      }
       if (!valid) return;
 
       try {
         const response = await fetch(API + "/auth/register/", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRF(),
+          },
           credentials: "include",
           body: JSON.stringify({
             username,
@@ -337,21 +388,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const data = await response.json();
 
         if (response.ok) {
-          localStorage.setItem("showToast", "✓ Account created! Please log in.");
+          localStorage.setItem(
+            "showToast",
+            "✓ Account created! Please log in.",
+          );
           window.location.href = path("SHARED/login.html");
         } else {
           if (data.email) showError("email", data.email[0]);
           if (data.username) showError("username", data.username[0]);
           if (data.password) showError("password", data.password[0]);
-          if (data.company_name) showError("company-name", data.company_name[0]);
-          if (data.non_field_errors) showError("confirm-password", data.non_field_errors[0]);
+          if (data.company_name)
+            showError("company-name", data.company_name[0]);
+          if (data.non_field_errors)
+            showError("confirm-password", data.non_field_errors[0]);
         }
       } catch (err) {
         showToast("Connection error. Is the server running?");
       }
     });
   }
-
 
   /* ════════════════════════════════════
      4. INDEX PAGE (Home)
@@ -369,14 +424,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const canvas = document.getElementById("hero-canvas");
     if (canvas) {
       const ctx = canvas.getContext("2d");
-      let width, height, tick = 0;
-      function resizeCanvas() { width = canvas.width = canvas.offsetWidth; height = canvas.height = canvas.offsetHeight; }
+      let width,
+        height,
+        tick = 0;
+      function resizeCanvas() {
+        width = canvas.width = canvas.offsetWidth;
+        height = canvas.height = canvas.offsetHeight;
+      }
       resizeCanvas();
       window.addEventListener("resize", resizeCanvas);
-      function getAccentColor() { return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#818cf8"; }
+      function getAccentColor() {
+        return (
+          getComputedStyle(document.documentElement)
+            .getPropertyValue("--accent")
+            .trim() || "#818cf8"
+        );
+      }
       function hexToRgba(hex, alpha) {
         hex = hex.replace("#", "");
-        if (hex.length === 3) hex = hex.split("").map(c => c + c).join("");
+        if (hex.length === 3)
+          hex = hex
+            .split("")
+            .map((c) => c + c)
+            .join("");
         const r = parseInt(hex.substring(0, 2), 16);
         const g = parseInt(hex.substring(2, 4), 16);
         const b = parseInt(hex.substring(4, 6), 16);
@@ -384,14 +454,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       function drawGrid() {
         ctx.clearRect(0, 0, width, height);
-        const step = 28, accent = getAccentColor();
+        const step = 28,
+          accent = getAccentColor();
         const light = document.body.classList.contains("light-mode");
         for (var x = 0; x <= width; x += step) {
           for (var y = 0; y <= height; y += step) {
             var dx = Math.sin(x * 0.04 + tick * 0.02) * 7;
             var dy = Math.cos(y * 0.04 + tick * 0.015) * 7;
             var base = light ? 0.25 : 0.35;
-            var alpha = base + Math.sin(x * 0.05 + y * 0.05 + tick * 0.02) * (light ? 0.15 : 0.2);
+            var alpha =
+              base +
+              Math.sin(x * 0.05 + y * 0.05 + tick * 0.02) *
+                (light ? 0.15 : 0.2);
             ctx.beginPath();
             ctx.arc(x + dx, y + dy, 1.6, 0, Math.PI * 2);
             ctx.fillStyle = hexToRgba(accent, alpha);
@@ -410,10 +484,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (heroBtn && heroInput) {
       heroBtn.addEventListener("click", function () {
         const q = heroInput.value.trim();
-        if (!q) { heroInput.classList.add("input-error-shake"); return; }
-        window.location.href = path("USER/jobs.html") + "?q=" + encodeURIComponent(q);
+        if (!q) {
+          heroInput.classList.add("input-error-shake");
+          return;
+        }
+        window.location.href =
+          path("USER/jobs.html") + "?q=" + encodeURIComponent(q);
       });
-      heroInput.addEventListener("keydown", function (e) { if (e.key === "Enter") heroBtn.click(); });
+      heroInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") heroBtn.click();
+      });
     }
 
     // ── Animated stats counter ──
@@ -425,7 +505,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const step = Math.ceil(target / 60);
       const timer = setInterval(function () {
         current += step;
-        if (current >= target) { current = target; clearInterval(timer); }
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
         el.textContent = current + suffix;
       }, 20);
     });
@@ -433,19 +516,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // ── Featured Jobs — loaded from backend ──
     const featuredGrid = document.querySelector(".featured-jobs .jobs-grid");
     if (featuredGrid) {
-      featuredGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;width:100%;">Loading...</p>';
+      featuredGrid.innerHTML =
+        '<p style="color:#9ca3af;text-align:center;width:100%;">Loading...</p>';
       fetch(API + "/jobs/?status=open", { credentials: "include" })
-        .then(r => r.json())
+        .then((r) => r.json())
         .then(function (jobs) {
           featuredGrid.innerHTML = "";
           // Show only first 4 open jobs
-          const featured = jobs.filter(j => j.status === "open").slice(0, 4);
+          const featured = jobs.filter((j) => j.status === "open").slice(0, 4);
           if (featured.length === 0) {
-            featuredGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;width:100%;">No open jobs available right now.</p>';
+            featuredGrid.innerHTML =
+              '<p style="color:#9ca3af;text-align:center;width:100%;">No open jobs available right now.</p>';
             return;
           }
           featured.forEach(function (job) {
-            featuredGrid.innerHTML += buildJobCard(job, "../USER/job-details.html", false);
+            featuredGrid.innerHTML += buildJobCard(
+              job,
+              "../USER/job-details.html",
+              false,
+            );
           });
           featuredGrid.querySelectorAll(".job-card a").forEach(function (link) {
             link.addEventListener("click", function (e) {
@@ -457,11 +546,11 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         })
         .catch(function () {
-          featuredGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;width:100%;">Could not load jobs.</p>';
+          featuredGrid.innerHTML =
+            '<p style="color:#9ca3af;text-align:center;width:100%;">Must be loggedin to load jobs.</p>';
         });
     }
   }
-
 
   /* ════════════════════════════════════
      5. JOBS PAGE
@@ -489,15 +578,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Build URL with query params to match what the backend expects
       let url = API + "/jobs/?";
-      if (search) url += "search=" + encodeURIComponent(search) + "&search_by=" + searchBy + "&";
+      if (search)
+        url +=
+          "search=" +
+          encodeURIComponent(search) +
+          "&search_by=" +
+          searchBy +
+          "&";
       if (sortBy) {
         // Convert HTML option values to backend format
-        const sortMap = { "salary-high": "salary_high", "salary-low": "salary_low", "experience-high": "experience_high", "experience-low": "experience_low" };
+        const sortMap = {
+          "salary-high": "salary_high",
+          "salary-low": "salary_low",
+          "experience-high": "experience_high",
+          "experience-low": "experience_low",
+        };
         url += "sort_by=" + (sortMap[sortBy] || sortBy) + "&";
       }
       if (statusVal && statusVal !== "all") url += "status=" + statusVal + "&";
 
-      jobsGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;width:100%;padding:40px;">Loading...</p>';
+      jobsGrid.innerHTML =
+        '<p style="color:#9ca3af;text-align:center;width:100%;padding:40px;">Loading...</p>';
 
       try {
         const response = await fetch(url, { credentials: "include" });
@@ -505,7 +606,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         jobsGrid.innerHTML = "";
         if (!jobs.length) {
-          jobsGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;width:100%;padding:40px;">No jobs found.</p>';
+          jobsGrid.innerHTML =
+            '<p style="color:#9ca3af;text-align:center;width:100%;padding:40px;">No jobs found.</p>';
           if (resultsInfo) resultsInfo.innerHTML = "";
           return;
         }
@@ -526,11 +628,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (resultsInfo) {
           resultsInfo.innerHTML = search
-            ? "Showing <strong>" + jobs.length + "</strong> result(s) for <strong>\"" + escapeHTML(search) + "\"</strong>."
+            ? "Showing <strong>" +
+              jobs.length +
+              '</strong> result(s) for <strong>"' +
+              escapeHTML(search) +
+              '"</strong>.'
             : "";
         }
       } catch (err) {
-        jobsGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;width:100%;padding:40px;">Could not load jobs. Is the server running?</p>';
+        jobsGrid.innerHTML =
+          '<p style="color:#9ca3af;text-align:center;width:100%;padding:40px;">Could not load jobs. Is the server running?</p>';
       }
     }
 
@@ -539,8 +646,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Search/filter/sort controls all trigger a new fetch
     if (searchBtn) searchBtn.addEventListener("click", loadJobs);
     if (searchInput) {
-      searchInput.addEventListener("keydown", function (e) { if (e.key === "Enter") loadJobs(); });
-      searchInput.addEventListener("input", function () { if (!this.value) loadJobs(); });
+      searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") loadJobs();
+      });
+      searchInput.addEventListener("input", function () {
+        if (!this.value) loadJobs();
+      });
     }
     if (sortFilter) sortFilter.addEventListener("change", loadJobs);
     if (statusFilter) statusFilter.addEventListener("change", loadJobs);
@@ -553,7 +664,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-
   /* ════════════════════════════════════
      6. JOB DETAILS PAGE
      File: USER/job-details.html
@@ -562,31 +672,40 @@ document.addEventListener("DOMContentLoaded", function () {
   ════════════════════════════════════ */
   if (page === "job-details.html") {
     const jobId = localStorage.getItem("selectedJobId");
-    if (!jobId) { window.location.href = "jobs.html"; return; }
+    if (!jobId) {
+      window.location.href = "jobs.html";
+      return;
+    }
 
     const currentUser = getCurrentUser();
 
     // Load job details from backend
     fetch(API + "/jobs/" + jobId + "/", { credentials: "include" })
-      .then(r => r.json())
+      .then((r) => r.json())
       .then(function (job) {
         document.getElementById("job-title").textContent = job.title;
         document.getElementById("job-company").textContent = job.company_name;
-        document.getElementById("job-work-type").textContent = formatWorkType(job.work_type);
-        document.getElementById("job-salary").textContent = "$" + Number(job.salary).toLocaleString();
-        document.getElementById("job-experience").textContent = job.years_of_experience + " years";
-        document.getElementById("job-description").textContent = job.description;
+        document.getElementById("job-work-type").textContent = formatWorkType(
+          job.work_type,
+        );
+        document.getElementById("job-salary").textContent =
+          "$" + Number(job.salary).toLocaleString();
+        document.getElementById("job-experience").textContent =
+          job.years_of_experience + " years";
+        document.getElementById("job-description").textContent =
+          job.description;
 
         const statusEl = document.getElementById("job-status");
         statusEl.textContent = job.status === "open" ? "Open" : "Closed";
-        statusEl.className = job.status === "open" ? "badge-open" : "badge-closed";
+        statusEl.className =
+          job.status === "open" ? "badge-open" : "badge-closed";
 
         setupApplyButton(job, currentUser);
         setupSaveButton(job, currentUser);
       })
       .catch(function () {
         showToast("Could not load job details.");
-        setTimeout(() => window.location.href = "jobs.html", 1500);
+        setTimeout(() => (window.location.href = "jobs.html"), 1500);
       });
 
     function setupApplyButton(job, user) {
@@ -599,31 +718,52 @@ document.addEventListener("DOMContentLoaded", function () {
         applyBtn.style.pointerEvents = "none";
       }
 
-      if (user && user.is_company_admin) { disableApply("Admins cannot apply"); return; }
-      if (job.status === "closed") { disableApply("Position Closed"); return; }
+      if (user && user.is_company_admin) {
+        disableApply("Admins cannot apply");
+        return;
+      }
+      if (job.status === "closed") {
+        disableApply("Position Closed");
+        return;
+      }
 
       // Check if user already applied by fetching their applications
       if (user) {
         fetch(API + "/jobs/applications/", { credentials: "include" })
-          .then(r => r.json())
+          .then((r) => r.json())
           .then(function (applications) {
-            const alreadyApplied = applications.some(a => a.job.id === job.id);
-            if (alreadyApplied) { disableApply("Already Applied"); return; }
+            const alreadyApplied = applications.some(
+              (a) => a.job.id === job.id,
+            );
+            if (alreadyApplied) {
+              disableApply("Already Applied");
+              return;
+            }
 
             applyBtn.addEventListener("click", async function (e) {
               e.preventDefault();
               try {
-                const response = await fetch(API + "/jobs/" + job.id + "/apply/", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
-                  credentials: "include",
-                });
+                const response = await fetch(
+                  API + "/jobs/" + job.id + "/apply/",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "X-CSRFToken": getCSRF(),
+                    },
+                    credentials: "include",
+                  },
+                );
                 const data = await response.json();
                 if (response.ok) {
                   disableApply("✓ Applied Successfully!");
-                  applyBtn.style.background = "linear-gradient(135deg, #1D9E75, #0F6E56)";
-                  showToast("Application submitted!");
-                  setTimeout(() => window.location.href = "applied-jobs.html", 1500);
+                  applyBtn.style.background =
+                    "linear-gradient(135deg, #1D9E75, #0F6E56)";
+                  localStorage.setItem(
+                    "showToast",
+                    "✓ Application submitted successfully!",
+                  );
+                  window.location.href = "applied-jobs.html";
                 } else {
                   showToast(data.error || "Could not apply.");
                 }
@@ -661,9 +801,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Check if job is already saved
       fetch(API + "/jobs/saved/", { credentials: "include" })
-        .then(r => r.json())
+        .then((r) => r.json())
         .then(function (savedJobs) {
-          const alreadySaved = savedJobs.some(s => s.job.id === job.id);
+          const alreadySaved = savedJobs.some((s) => s.job.id === job.id);
           if (alreadySaved) {
             saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
             saveBtn.classList.add("btn-saved");
@@ -675,7 +815,10 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
               const response = await fetch(API + "/jobs/" + job.id + "/save/", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": getCSRF(),
+                },
                 credentials: "include",
               });
               const data = await response.json();
@@ -694,7 +837,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-
   /* ════════════════════════════════════
      7. APPLIED JOBS PAGE
      File: USER/applied-jobs.html
@@ -709,7 +851,7 @@ document.addEventListener("DOMContentLoaded", function () {
     emptyMsg.style.display = "none";
 
     fetch(API + "/jobs/applications/", { credentials: "include" })
-      .then(r => r.json())
+      .then((r) => r.json())
       .then(function (applications) {
         if (applications.length === 0) {
           emptyMsg.style.display = "block";
@@ -726,17 +868,20 @@ document.addEventListener("DOMContentLoaded", function () {
         grid.querySelectorAll(".job-card a.view-link").forEach(function (link) {
           link.addEventListener("click", function (e) {
             e.preventDefault();
-            localStorage.setItem("selectedJobId", link.closest(".job-card").dataset.id);
+            localStorage.setItem(
+              "selectedJobId",
+              link.closest(".job-card").dataset.id,
+            );
             window.location.href = "job-details.html";
           });
         });
       })
       .catch(function () {
         emptyMsg.style.display = "block";
-        emptyMsg.querySelector("p").textContent = "Could not load applied jobs.";
+        emptyMsg.querySelector("p").textContent =
+          "Could not load applied jobs.";
       });
   }
-
 
   /* ════════════════════════════════════
      8. SAVED JOBS PAGE
@@ -750,7 +895,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadSavedJobs() {
       fetch(API + "/jobs/saved/", { credentials: "include" })
-        .then(r => r.json())
+        .then((r) => r.json())
         .then(function (savedJobs) {
           grid.innerHTML = "";
           if (savedJobs.length === 0) {
@@ -769,7 +914,10 @@ document.addEventListener("DOMContentLoaded", function () {
           grid.querySelectorAll(".view-details-link").forEach(function (link) {
             link.addEventListener("click", function (e) {
               e.preventDefault();
-              localStorage.setItem("selectedJobId", link.closest(".job-card").dataset.id);
+              localStorage.setItem(
+                "selectedJobId",
+                link.closest(".job-card").dataset.id,
+              );
               window.location.href = "job-details.html";
             });
           });
@@ -801,13 +949,13 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(function () {
           emptyMsg.style.display = "block";
-          emptyMsg.querySelector("p").textContent = "Could not load saved jobs.";
+          emptyMsg.querySelector("p").textContent =
+            "Could not load saved jobs.";
         });
     }
 
     loadSavedJobs();
   }
-
 
   /* ════════════════════════════════════
      9. ADMIN DASHBOARD
@@ -820,9 +968,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!jobsGrid) return;
 
     async function loadAdminJobs() {
-      jobsGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:40px;width:100%;">Loading...</p>';
+      jobsGrid.innerHTML =
+        '<p style="color:#9ca3af;text-align:center;padding:40px;width:100%;">Loading...</p>';
       try {
-        const response = await fetch(API + "/jobs/admin/", { credentials: "include" });
+        const response = await fetch(API + "/jobs/admin/", {
+          credentials: "include",
+        });
         const jobs = await response.json();
 
         jobsGrid.innerHTML = "";
@@ -836,7 +987,7 @@ document.addEventListener("DOMContentLoaded", function () {
           jobsGrid.innerHTML += buildJobCard(job, null, true);
         });
 
-        const open = jobs.filter(j => j.status === "open").length;
+        const open = jobs.filter((j) => j.status === "open").length;
         updateDashboardStats(open, jobs.length - open);
 
         // Delete button
@@ -845,25 +996,28 @@ document.addEventListener("DOMContentLoaded", function () {
             const card = btn.closest(".job-card");
             const jId = card.dataset.id;
             const title = card.querySelector("h3").textContent;
-            showConfirmModal('Delete "' + title + '"? This cannot be undone.', async function () {
-              try {
-                const res = await fetch(API + "/jobs/" + jId + "/", {
-                  method: "DELETE",
-                  headers: { "X-CSRFToken": getCSRF() },
-                  credentials: "include",
-                });
-                if (res.ok) {
-                  card.style.opacity = "0";
-                  card.style.transition = "opacity 0.3s";
-                  setTimeout(loadAdminJobs, 300);
-                  showToast("Job deleted.");
-                } else {
-                  showToast("Could not delete job.");
+            showConfirmModal(
+              'Delete "' + title + '"? This cannot be undone.',
+              async function () {
+                try {
+                  const res = await fetch(API + "/jobs/" + jId + "/", {
+                    method: "DELETE",
+                    headers: { "X-CSRFToken": getCSRF() },
+                    credentials: "include",
+                  });
+                  if (res.ok) {
+                    card.style.opacity = "0";
+                    card.style.transition = "opacity 0.3s";
+                    setTimeout(loadAdminJobs, 300);
+                    showToast("Job deleted.");
+                  } else {
+                    showToast("Could not delete job.");
+                  }
+                } catch (err) {
+                  showToast("Connection error.");
                 }
-              } catch (err) {
-                showToast("Connection error.");
-              }
-            });
+              },
+            );
           });
         });
 
@@ -871,21 +1025,29 @@ document.addEventListener("DOMContentLoaded", function () {
         jobsGrid.querySelectorAll(".edit-link").forEach(function (link) {
           link.addEventListener("click", function (e) {
             e.preventDefault();
-            localStorage.setItem("editJobId", link.closest(".job-card").dataset.id);
+            localStorage.setItem(
+              "editJobId",
+              link.closest(".job-card").dataset.id,
+            );
             window.location.href = "edit-job.html";
           });
         });
 
         // View applicants button
-        jobsGrid.querySelectorAll(".view-applicants-btn").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            localStorage.setItem("viewJobId", btn.closest(".job-card").dataset.id);
-            window.location.href = "applicants.html";
+        jobsGrid
+          .querySelectorAll(".view-applicants-btn")
+          .forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              localStorage.setItem(
+                "viewJobId",
+                btn.closest(".job-card").dataset.id,
+              );
+              window.location.href = "applicants.html";
+            });
           });
-        });
-
       } catch (err) {
-        jobsGrid.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:40px;width:100%;">Could not load jobs.</p>';
+        jobsGrid.innerHTML =
+          '<p style="color:#9ca3af;text-align:center;padding:40px;width:100%;">Could not load jobs.</p>';
       }
     }
 
@@ -896,14 +1058,19 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!statsEl) {
         statsEl = document.createElement("p");
         statsEl.id = "dashboard-stats";
-        statsEl.style.cssText = "color:#6b7280;margin-bottom:20px;font-size:14px;font-weight:500;";
+        statsEl.style.cssText =
+          "color:#6b7280;margin-bottom:20px;font-size:14px;font-weight:500;";
         const h1 = document.querySelector(".dashboard-container h1");
         if (h1) h1.insertAdjacentElement("afterend", statsEl);
       }
-      statsEl.innerHTML = '<span style="color:#7c3aed;font-weight:700;">' + open + '</span> Open &nbsp;·&nbsp; <span style="color:#6b7280;">' + closed + "</span> Closed";
+      statsEl.innerHTML =
+        '<span style="color:#7c3aed;font-weight:700;">' +
+        open +
+        '</span> Open &nbsp;·&nbsp; <span style="color:#6b7280;">' +
+        closed +
+        "</span> Closed";
     }
   }
-
 
   /* ════════════════════════════════════
      10. ADD JOB PAGE
@@ -913,7 +1080,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (page === "add-job.html") {
     const currentUser = getCurrentUser();
     const companyField = document.getElementById("company-name");
-    if (companyField && currentUser) companyField.value = currentUser.company_name || "";
+    if (companyField && currentUser)
+      companyField.value = currentUser.company_name || "";
     const form = document.querySelector("form");
     if (!form) return;
 
@@ -929,11 +1097,14 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         const response = await fetch(API + "/jobs/", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRF(),
+          },
           credentials: "include",
           body: JSON.stringify({
             title: values.title,
-            work_type: values.workType,  // must match backend field names
+            work_type: values.workType, // must match backend field names
             salary: values.salary,
             years_of_experience: parseInt(values.experience),
             status: values.status,
@@ -945,14 +1116,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const data = await response.json();
 
         if (response.ok) {
-          showToast("Job posted successfully!");
           localStorage.setItem("showToast", "✓ Job posted successfully!");
-          setTimeout(() => window.location.href = "admin-dashboard.html", 800);
+          window.location.href = path("ADMIN/admin-dashboard.html");
         } else {
           // Show backend validation errors on the correct fields
           if (data.title) showError("job-title", data.title[0]);
           if (data.salary) showError("salary", data.salary[0]);
-          if (data.years_of_experience) showError("years-of-experience", data.years_of_experience[0]);
+          if (data.years_of_experience)
+            showError("years-of-experience", data.years_of_experience[0]);
           if (data.description) showError("description", data.description[0]);
           if (data.work_type) showError("work-type", data.work_type[0]);
           if (data.error) showToast(data.error);
@@ -962,7 +1133,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
-
 
   /* ════════════════════════════════════
      11. EDIT JOB PAGE
@@ -975,17 +1145,21 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!form) return;
 
     const editJobId = localStorage.getItem("editJobId");
-    if (!editJobId) { window.location.href = "admin-dashboard.html"; return; }
+    if (!editJobId) {
+      window.location.href = "admin-dashboard.html";
+      return;
+    }
 
     // Load the job from backend to pre-fill the form
     fetch(API + "/jobs/" + editJobId + "/", { credentials: "include" })
-      .then(r => r.json())
+      .then((r) => r.json())
       .then(function (job) {
         document.getElementById("job-title").value = job.title;
         document.getElementById("company-name").value = job.company_name;
         document.getElementById("work-type").value = job.work_type;
         document.getElementById("salary").value = job.salary;
-        document.getElementById("years-of-experience").value = job.years_of_experience;
+        document.getElementById("years-of-experience").value =
+          job.years_of_experience;
         document.getElementById("job-status").value = job.status;
         document.getElementById("description").value = job.description;
 
@@ -1006,7 +1180,10 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         const response = await fetch(API + "/jobs/" + editJobId + "/", {
           method: "PUT",
-          headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRF(),
+          },
           credentials: "include",
           body: JSON.stringify({
             title: values.title,
@@ -1026,7 +1203,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           if (data.title) showError("job-title", data.title[0]);
           if (data.salary) showError("salary", data.salary[0]);
-          if (data.years_of_experience) showError("years-of-experience", data.years_of_experience[0]);
+          if (data.years_of_experience)
+            showError("years-of-experience", data.years_of_experience[0]);
           if (data.description) showError("description", data.description[0]);
           if (data.error) showToast(data.error);
         }
@@ -1036,7 +1214,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
   /* ════════════════════════════════════
      12. APPLICANTS PAGE
      File: ADMIN/applicants.html
@@ -1044,7 +1221,10 @@ document.addEventListener("DOMContentLoaded", function () {
   ════════════════════════════════════ */
   if (page === "applicants.html") {
     const viewJobId = localStorage.getItem("viewJobId");
-    if (!viewJobId) { window.location.href = "admin-dashboard.html"; return; }
+    if (!viewJobId) {
+      window.location.href = "admin-dashboard.html";
+      return;
+    }
 
     const titleEl = document.getElementById("applicants-job-title");
     const metaEl = document.getElementById("applicants-job-meta");
@@ -1055,15 +1235,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Load job info first (for the title/meta at the top)
     fetch(API + "/jobs/" + viewJobId + "/", { credentials: "include" })
-      .then(r => r.json())
+      .then((r) => r.json())
       .then(function (job) {
         if (titleEl) titleEl.textContent = job.title;
-        if (metaEl) metaEl.textContent = job.company_name + " · " + (job.status === "open" ? "Open" : "Closed");
+        if (metaEl)
+          metaEl.textContent =
+            job.company_name +
+            " · " +
+            (job.status === "open" ? "Open" : "Closed");
       });
 
     // Load applicants
-    fetch(API + "/jobs/admin/" + viewJobId + "/applicants/", { credentials: "include" })
-      .then(r => r.json())
+    fetch(API + "/jobs/admin/" + viewJobId + "/applicants/", {
+      credentials: "include",
+    })
+      .then((r) => r.json())
       .then(function (applications) {
         if (applications.length === 0) {
           if (noApplicants) noApplicants.style.display = "block";
@@ -1074,7 +1260,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (tableWrap) tableWrap.style.display = "block";
 
         if (countEl) {
-          countEl.innerHTML = "<strong>" + applications.length + "</strong> applicant" + (applications.length !== 1 ? "s" : "");
+          countEl.innerHTML =
+            "<strong>" +
+            applications.length +
+            "</strong> applicant" +
+            (applications.length !== 1 ? "s" : "");
         }
 
         applications.forEach(function (app, index) {
@@ -1089,10 +1279,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       })
       .catch(function () {
-        if (noApplicants) { noApplicants.style.display = "block"; noApplicants.querySelector("p").textContent = "Could not load applicants."; }
+        if (noApplicants) {
+          noApplicants.style.display = "block";
+          noApplicants.querySelector("p").textContent =
+            "Could not load applicants.";
+        }
       });
   }
-
 
   /* ════════════════════════════════════
      13. FORGOT PASSWORD PAGE
@@ -1143,19 +1336,39 @@ document.addEventListener("DOMContentLoaded", function () {
       clearAllErrors();
 
       const email = emailInput.value.trim();
-      const newPassword = document.getElementById("fp-new-password") ? document.getElementById("fp-new-password").value : "";
-      const confirmPassword = document.getElementById("fp-confirm-password") ? document.getElementById("fp-confirm-password").value : "";
+      const newPassword = document.getElementById("fp-new-password")
+        ? document.getElementById("fp-new-password").value
+        : "";
+      const confirmPassword = document.getElementById("fp-confirm-password")
+        ? document.getElementById("fp-confirm-password").value
+        : "";
 
-      if (!email || !isValidEmail(email)) { showError("email", "Please enter a valid email."); return; }
-      if (!newPassword || newPassword.length < 8) { showError("fp-new-password", "Password must be at least 8 characters."); return; }
-      if (newPassword !== confirmPassword) { showError("fp-confirm-password", "Passwords do not match."); return; }
+      if (!email || !isValidEmail(email)) {
+        showError("email", "Please enter a valid email.");
+        return;
+      }
+      if (!newPassword || newPassword.length < 8) {
+        showError("fp-new-password", "Password must be at least 8 characters.");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        showError("fp-confirm-password", "Passwords do not match.");
+        return;
+      }
 
       try {
         const response = await fetch(API + "/auth/forgot-password/", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRF(),
+          },
           credentials: "include",
-          body: JSON.stringify({ email, new_password: newPassword, confirm_password: confirmPassword }),
+          body: JSON.stringify({
+            email,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
+          }),
         });
         const data = await response.json();
         if (response.ok) {
@@ -1170,7 +1383,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
   /* ════════════════════════════════════
      14. PROFILE PAGE
      File: USER/profile.html
@@ -1180,12 +1392,18 @@ document.addEventListener("DOMContentLoaded", function () {
   ════════════════════════════════════ */
   if (page === "profile.html") {
     const currentUser = getCurrentUser();
-    if (!currentUser) { window.location.href = path("SHARED/login.html"); return; }
+    if (!currentUser) {
+      window.location.href = path("SHARED/login.html");
+      return;
+    }
 
     const displayName = document.getElementById("profile-display-name");
     const displayRole = document.getElementById("profile-display-role");
     if (displayName) displayName.textContent = currentUser.username;
-    if (displayRole) displayRole.textContent = currentUser.is_company_admin ? "Company Admin" : "Job Seeker";
+    if (displayRole)
+      displayRole.textContent = currentUser.is_company_admin
+        ? "Company Admin"
+        : "Job Seeker";
 
     // Pre-fill the form with current user data
     document.getElementById("profile-username").value = currentUser.username;
@@ -1198,7 +1416,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       // Load applied jobs count
       fetch(API + "/jobs/applications/", { credentials: "include" })
-        .then(r => r.json())
+        .then((r) => r.json())
         .then(function (applications) {
           const countEl = document.getElementById("applied-count");
           if (countEl) countEl.textContent = applications.length;
@@ -1212,20 +1430,42 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         clearAllErrors();
 
-        const newUsername = document.getElementById("profile-username").value.trim();
+        const newUsername = document
+          .getElementById("profile-username")
+          .value.trim();
         const newEmail = document.getElementById("profile-email").value.trim();
         const currentPass = document.getElementById("current-password").value;
         const newPass = document.getElementById("new-password").value;
-        const confirmNewPass = document.getElementById("confirm-new-password").value;
+        const confirmNewPass = document.getElementById(
+          "confirm-new-password",
+        ).value;
         let valid = true;
 
-        if (!newUsername || newUsername.length < 3) { showError("profile-username", "Username must be at least 3 characters."); valid = false; }
-        if (!newEmail || !isValidEmail(newEmail)) { showError("profile-email", "Please enter a valid email."); valid = false; }
+        if (!newUsername || newUsername.length < 3) {
+          showError(
+            "profile-username",
+            "Username must be at least 3 characters.",
+          );
+          valid = false;
+        }
+        if (!newEmail || !isValidEmail(newEmail)) {
+          showError("profile-email", "Please enter a valid email.");
+          valid = false;
+        }
 
         if (currentPass || newPass || confirmNewPass) {
-          if (!currentPass) { showError("current-password", "Enter your current password."); valid = false; }
-          if (newPass && newPass.length < 8) { showError("new-password", "Must be at least 8 characters."); valid = false; }
-          if (newPass !== confirmNewPass) { showError("confirm-new-password", "Passwords do not match."); valid = false; }
+          if (!currentPass) {
+            showError("current-password", "Enter your current password.");
+            valid = false;
+          }
+          if (newPass && newPass.length < 8) {
+            showError("new-password", "Must be at least 8 characters.");
+            valid = false;
+          }
+          if (newPass !== confirmNewPass) {
+            showError("confirm-new-password", "Passwords do not match.");
+            valid = false;
+          }
         }
         if (!valid) return;
 
@@ -1239,7 +1479,10 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
           const response = await fetch(API + "/auth/profile/", {
             method: "PUT",
-            headers: { "Content-Type": "application/json", "X-CSRFToken": getCSRF() },
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRF(),
+            },
             credentials: "include",
             body: JSON.stringify(body),
           });
@@ -1254,7 +1497,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const submitBtn = form.querySelector('input[type="submit"]');
             if (submitBtn) {
               submitBtn.value = "Saved!";
-              setTimeout(() => submitBtn.value = "Save Changes", 2000);
+              setTimeout(() => (submitBtn.value = "Save Changes"), 2000);
             }
             document.getElementById("current-password").value = "";
             document.getElementById("new-password").value = "";
@@ -1274,27 +1517,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const deleteBtn = document.getElementById("delete-account-btn");
     if (deleteBtn) {
       deleteBtn.addEventListener("click", function () {
-        showConfirmModal("Delete your account? This cannot be undone.", async function () {
-          try {
-            const response = await fetch(API + "/auth/profile/", {
-              method: "DELETE",
-              headers: { "X-CSRFToken": getCSRF() },
-              credentials: "include",
-            });
-            if (response.ok) {
-              localStorage.removeItem("currentUser");
-              window.location.href = path("SHARED/index.html");
-            } else {
-              showToast("Could not delete account.");
+        showConfirmModal(
+          "Delete your account? This cannot be undone.",
+          async function () {
+            try {
+              const response = await fetch(API + "/auth/profile/", {
+                method: "DELETE",
+                headers: { "X-CSRFToken": getCSRF() },
+                credentials: "include",
+              });
+              if (response.ok) {
+                localStorage.removeItem("currentUser");
+                window.location.href = path("SHARED/index.html");
+              } else {
+                showToast("Could not delete account.");
+              }
+            } catch (err) {
+              showToast("Connection error.");
             }
-          } catch (err) {
-            showToast("Connection error.");
-          }
-        });
+          },
+        );
       });
     }
   }
-
 
   /* ════════════════════════════════════
      SHARED — JOB FORM HELPERS
@@ -1302,23 +1547,55 @@ document.addEventListener("DOMContentLoaded", function () {
   ════════════════════════════════════ */
   function getJobFormValues() {
     return {
-      title: document.getElementById("job-title") ? document.getElementById("job-title").value.trim() : "",
-      company: document.getElementById("company-name") ? document.getElementById("company-name").value.trim() : "",
-      workType: document.getElementById("work-type") ? document.getElementById("work-type").value : "",
-      salary: document.getElementById("salary") ? document.getElementById("salary").value : "",
-      experience: document.getElementById("years-of-experience") ? document.getElementById("years-of-experience").value : "",
-      status: document.getElementById("job-status") ? document.getElementById("job-status").value : "",
-      desc: document.getElementById("description") ? document.getElementById("description").value.trim() : "",
+      title: document.getElementById("job-title")
+        ? document.getElementById("job-title").value.trim()
+        : "",
+      company: document.getElementById("company-name")
+        ? document.getElementById("company-name").value.trim()
+        : "",
+      workType: document.getElementById("work-type")
+        ? document.getElementById("work-type").value
+        : "",
+      salary: document.getElementById("salary")
+        ? document.getElementById("salary").value
+        : "",
+      experience: document.getElementById("years-of-experience")
+        ? document.getElementById("years-of-experience").value
+        : "",
+      status: document.getElementById("job-status")
+        ? document.getElementById("job-status").value
+        : "",
+      desc: document.getElementById("description")
+        ? document.getElementById("description").value.trim()
+        : "",
     };
   }
 
   function validateJobForm(v) {
     let valid = true;
-    if (!v.title || v.title.length < 3) { showError("job-title", "Job title must be at least 3 characters."); valid = false; }
-    if (v.salary === "" || Number(v.salary) < 0) { showError("salary", "Please enter a valid salary."); valid = false; }
-    if (v.experience === "" || Number(v.experience) < 0) { showError("years-of-experience", "Please enter valid years of experience."); valid = false; }
-    if (!v.status) { showError("job-status", "Please select a job status."); valid = false; }
-    if (!v.desc || v.desc.length < 20) { showError("description", "Description must be at least 20 characters."); valid = false; }
+    if (!v.title || v.title.length < 3) {
+      showError("job-title", "Job title must be at least 3 characters.");
+      valid = false;
+    }
+    if (v.salary === "" || Number(v.salary) < 0) {
+      showError("salary", "Please enter a valid salary.");
+      valid = false;
+    }
+    if (v.experience === "" || Number(v.experience) < 0) {
+      showError(
+        "years-of-experience",
+        "Please enter valid years of experience.",
+      );
+      valid = false;
+    }
+    if (!v.status) {
+      showError("job-status", "Please select a job status.");
+      valid = false;
+    }
+    if (!v.desc || v.desc.length < 20) {
+      showError("description", "Description must be at least 20 characters.");
+      valid = false;
+    }
     return valid;
   }
 
@@ -1335,7 +1612,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
   /* ════════════════════════════════════
      SHARED — BUILD JOB CARD HTML
      Reused across multiple pages to
@@ -1344,7 +1620,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function buildJobCard(job, detailsHref, showActions, showAppliedBadge) {
     const badgeClass = job.status === "open" ? "badge-open" : "badge-closed";
     const badgeText = job.status === "open" ? "Open" : "Closed";
-    const salary = job.salary ? "$" + Number(job.salary).toLocaleString() : "N/A";
+    const salary = job.salary
+      ? "$" + Number(job.salary).toLocaleString()
+      : "N/A";
 
     let actionsHTML = "";
     if (showActions) {
@@ -1382,7 +1660,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function buildSavedJobCard(job) {
     const badgeClass = job.status === "open" ? "badge-open" : "badge-closed";
     const badgeText = job.status === "open" ? "Open" : "Closed";
-    const salary = job.salary ? "$" + Number(job.salary).toLocaleString() : "N/A";
+    const salary = job.salary
+      ? "$" + Number(job.salary).toLocaleString()
+      : "N/A";
     return `
       <article class="job-card" data-id="${job.id}">
         <span class="saved-badge"><i class="fa-solid fa-bookmark"></i> Saved</span>
@@ -1400,10 +1680,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Converts backend work_type values to human-readable labels
   function formatWorkType(workType) {
-    const map = { full_time: "Full Time", part_time: "Part Time", remote: "Remote", internship: "Internship" };
+    const map = {
+      full_time: "Full Time",
+      part_time: "Part Time",
+      remote: "Remote",
+      internship: "Internship",
+    };
     return map[workType] || workType || "N/A";
   }
-
 
   /* ════════════════════════════════════
      SHARED UTILITIES
@@ -1424,9 +1708,20 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
     document.body.appendChild(overlay);
-    overlay.querySelector(".modal-confirm").addEventListener("click", function () { overlay.remove(); onConfirm(); });
-    overlay.querySelector(".modal-cancel").addEventListener("click", function () { overlay.remove(); });
-    overlay.addEventListener("click", function (e) { if (e.target === overlay) overlay.remove(); });
+    overlay
+      .querySelector(".modal-confirm")
+      .addEventListener("click", function () {
+        overlay.remove();
+        onConfirm();
+      });
+    overlay
+      .querySelector(".modal-cancel")
+      .addEventListener("click", function () {
+        overlay.remove();
+      });
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) overlay.remove();
+    });
   }
 
   // Shows a red error message below an input field
@@ -1438,10 +1733,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const error = document.createElement("p");
     error.className = "error-message";
     error.textContent = message;
-    error.style.cssText = "color:#ff6b6b;font-size:12px;margin-top:6px;margin-bottom:0;";
+    error.style.cssText =
+      "color:#ff6b6b;font-size:12px;margin-top:6px;margin-bottom:0;";
     const parent = input.closest(".input-icon") || input.parentNode;
     parent.insertAdjacentElement("afterend", error);
-    input.addEventListener("input", function () { clearError(inputId); }, { once: true });
+    input.addEventListener(
+      "input",
+      function () {
+        clearError(inputId);
+      },
+      { once: true },
+    );
   }
 
   // Shows a green success message below an input field
@@ -1453,7 +1755,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const msg = document.createElement("p");
     msg.className = "success-message";
     msg.textContent = message;
-    msg.style.cssText = "color:#00c864;font-size:12px;margin-top:6px;margin-bottom:0;";
+    msg.style.cssText =
+      "color:#00c864;font-size:12px;margin-top:6px;margin-bottom:0;";
     const parent = input.closest(".input-icon") || input.parentNode;
     parent.insertAdjacentElement("afterend", msg);
   }
@@ -1464,14 +1767,20 @@ document.addEventListener("DOMContentLoaded", function () {
     input.classList.remove("input-error", "input-success");
     const parent = input.closest(".input-icon") || input.parentNode;
     const existing = parent.nextElementSibling;
-    if (existing && (existing.classList.contains("error-message") || existing.classList.contains("success-message"))) {
+    if (
+      existing &&
+      (existing.classList.contains("error-message") ||
+        existing.classList.contains("success-message"))
+    ) {
       existing.remove();
     }
   }
 
   function clearAllErrors() {
-    document.querySelectorAll(".error-message, .success-message").forEach(el => el.remove());
-    document.querySelectorAll("input, select, textarea").forEach(el => {
+    document
+      .querySelectorAll(".error-message, .success-message")
+      .forEach((el) => el.remove());
+    document.querySelectorAll("input, select, textarea").forEach((el) => {
       el.classList.remove("input-error", "input-success");
     });
   }
@@ -1481,7 +1790,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getPasswordStrength(password) {
-    const score = [/[A-Z]/.test(password), /[a-z]/.test(password), /[0-9]/.test(password), /[^A-Za-z0-9]/.test(password)].filter(Boolean).length;
+    const score = [
+      /[A-Z]/.test(password),
+      /[a-z]/.test(password),
+      /[0-9]/.test(password),
+      /[^A-Za-z0-9]/.test(password),
+    ].filter(Boolean).length;
     if (password.length < 8) return "weak";
     if (score <= 2) return "weak";
     if (score === 3) return "medium";
@@ -1497,7 +1811,9 @@ document.addEventListener("DOMContentLoaded", function () {
     toast.id = "cl-toast";
     toast.textContent = message;
     document.body.appendChild(toast);
-    setTimeout(function () { if (toast.parentNode) toast.remove(); }, duration);
+    setTimeout(function () {
+      if (toast.parentNode) toast.remove();
+    }, duration);
   }
 
   // Prevents XSS — always use this when inserting user content into HTML
@@ -1509,5 +1825,4 @@ document.addEventListener("DOMContentLoaded", function () {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
-
 });
